@@ -7,7 +7,6 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Example data for the ListView
     final items = mockTasks;
 
     return Padding(
