@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'task.dart';
+part of 'chore.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Task _$TaskFromJson(Map<String, dynamic> json) => Task(
+Chore _$ChoreFromJson(Map<String, dynamic> json) => Chore(
   json['id'] as String,
   json['name'] as String,
   json['description'] as String,
@@ -17,7 +17,7 @@ Task _$TaskFromJson(Map<String, dynamic> json) => Task(
   rewardPointsCount: (json['rewardPointsCount'] as num?)?.toInt() ?? 0,
 );
 
-Map<String, dynamic> _$TaskToJson(Task instance) => <String, dynamic>{
+Map<String, dynamic> _$ChoreToJson(Chore instance) => <String, dynamic>{
   'id': instance.id,
   'name': instance.name,
   'description': instance.description,

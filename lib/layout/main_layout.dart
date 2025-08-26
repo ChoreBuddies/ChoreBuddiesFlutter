@@ -29,7 +29,7 @@ class _MainLayoutState extends State<MainLayout> {
         showUnselectedLabels: true,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Tasks'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Chores'),
           BottomNavigationBarItem(
             icon: Icon(Icons.emoji_events),
             label: 'Rewards',

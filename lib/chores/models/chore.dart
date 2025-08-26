@@ -1,10 +1,10 @@
-import 'package:chorebuddies_flutter/tasks/models/status.dart';
+import 'package:chorebuddies_flutter/chores/models/status.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'task.g.dart';
+part 'chore.g.dart';
 
 @JsonSerializable()
-class Task {
+class Chore {
   String id;
   String name;
   String description;
@@ -14,7 +14,7 @@ class Task {
   String room;
   int rewardPointsCount;
 
-  Task(
+  Chore(
     this.id,
     this.name,
     this.description,
