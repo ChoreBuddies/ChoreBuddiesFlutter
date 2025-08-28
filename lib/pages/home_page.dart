@@ -7,8 +7,9 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Example data for the ListView
+
     final items = mockChores;
+
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
