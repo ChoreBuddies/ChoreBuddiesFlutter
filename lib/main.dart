@@ -1,8 +1,10 @@
 import 'package:chorebuddies_flutter/dependencies.dart';
 import 'package:chorebuddies_flutter/layout/main_layout.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+Future main() async {
+  await dotenv.load(fileName: ".env");
   runApp(buildDependencies(child: const MyApp()));
 }
 

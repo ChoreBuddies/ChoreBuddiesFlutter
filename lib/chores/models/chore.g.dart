@@ -10,7 +10,7 @@ Chore _$ChoreFromJson(Map<String, dynamic> json) => Chore(
   json['id'] as String,
   json['name'] as String,
   json['description'] as String,
-  json['assignedTo'] as String,
+  json['assignedTo'] as String?,
   DateTime.parse(json['dueDate'] as String),
   $enumDecode(_$StatusEnumMap, json['status']),
   json['room'] as String,
@@ -29,7 +29,7 @@ Map<String, dynamic> _$ChoreToJson(Chore instance) => <String, dynamic>{
 };
 
 const _$StatusEnumMap = {
-  Status.unassigned: 'unassigned',
-  Status.assigned: 'assigned',
-  Status.completed: 'completed',
+  Status.unassigned: 0,
+  Status.assigned: 1,
+  Status.completed: 2,
 };
