@@ -1,8 +1,8 @@
-import 'package:chorebuddies_flutter/tasks/models/status.dart';
-import 'package:chorebuddies_flutter/tasks/models/task.dart';
+import 'package:chorebuddies_flutter/chores/models/status.dart';
+import 'package:chorebuddies_flutter/chores/models/chore.dart';
 
-final mockTasks = [
-  Task(
+final mockChores = [
+  Chore(
     '1',
     'Vacuum The Living',
     'Vacuum the entire living room thoroughly.',
@@ -12,7 +12,7 @@ final mockTasks = [
     'Living Room',
     rewardPointsCount: 10,
   ),
-  Task(
+  Chore(
     '2',
     'Wash Sins',
     'Clean all dishes after dinner.',
@@ -22,7 +22,7 @@ final mockTasks = [
     'Kitchen',
     rewardPointsCount: 5,
   ),
-  Task(
+  Chore(
     '3',
     'Take Out Trash',
     'Take out the trash before 8 PM.',
