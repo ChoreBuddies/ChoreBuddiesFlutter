@@ -8,7 +8,7 @@ class Chore {
   String id;
   String name;
   String description;
-  String assignedTo;
+  String? assignedTo;
   DateTime dueDate;
   Status status;
   String room;

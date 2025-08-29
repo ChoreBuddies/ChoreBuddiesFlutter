@@ -7,7 +7,7 @@ part of 'status.dart';
 // **************************************************************************
 
 const _$StatusEnumMap = {
-  Status.unassigned: 'unassigned',
-  Status.assigned: 'assigned',
-  Status.completed: 'completed',
+  Status.unassigned: 0,
+  Status.assigned: 1,
+  Status.completed: 2,
 };
