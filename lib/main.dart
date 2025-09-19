@@ -1,7 +1,11 @@
+import 'package:chorebuddies_flutter/authentication/auth_manager.dart';
 import 'package:chorebuddies_flutter/dependencies.dart';
 import 'package:chorebuddies_flutter/layout/main_layout.dart';
+import 'package:chorebuddies_flutter/pages/login_page.dart';
+import 'package:chorebuddies_flutter/pages/page_not_found.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
 
 Future main() async {
   await dotenv.load(fileName: ".env");
@@ -25,7 +29,17 @@ class MyApp extends StatelessWidget {
           unselectedItemColor: Colors.grey,
         ),
       ),
-      home: const MainLayout(),
+      home: Consumer<AuthManager>(
+        builder: (context, auth, child) {
+          if (auth.isLoggedIn) {
+            return MainLayout();
+          } else {
+            return LoginPage();
+          }
+        },
+      ),
+      onUnknownRoute: (settings) =>
+          MaterialPageRoute(builder: (context) => const PageNotFound()),
     );
   }
 }

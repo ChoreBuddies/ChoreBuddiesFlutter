@@ -1,4 +1,6 @@
-import 'package:chorebuddies_flutter/api/http_util.dart';
+import 'package:chorebuddies_flutter/authentication/auth_api_service.dart';
+import 'package:chorebuddies_flutter/authentication/auth_client.dart';
+import 'package:chorebuddies_flutter/authentication/auth_manager.dart';
 import 'package:chorebuddies_flutter/chores/chore_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -12,8 +14,20 @@ Widget buildDependencies({required Widget child}) {
 
   return MultiProvider(
     providers: [
-      Provider<HttpUtil>(create: (_) => HttpUtil(baseUrl: baseUrl)),
-      Provider(create: (ctx) => ChoreService(httpUtil: ctx.read<HttpUtil>())),
+      Provider<AuthApiService>(
+        create: (ctx) => AuthApiService(baseUrl: baseUrl),
+      ),
+      ChangeNotifierProvider<AuthManager>(
+        create: (ctx) =>
+            AuthManager(apiService: ctx.read<AuthApiService>())..init(),
+      ),
+      Provider<AuthClient>(
+        create: (ctx) =>
+            AuthClient(baseUrl: baseUrl, authManager: ctx.read<AuthManager>()),
+      ),
+      Provider(
+        create: (ctx) => ChoreService(authClient: ctx.read<AuthClient>()),
+      ),
     ],
     child: child,
   );
