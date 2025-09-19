@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:chorebuddies_flutter/chores/models/chore_overview.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {

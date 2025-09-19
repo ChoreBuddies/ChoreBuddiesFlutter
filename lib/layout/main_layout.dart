@@ -1,3 +1,5 @@
+import 'package:chorebuddies_flutter/pages/profile_page.dart';
+import 'package:chorebuddies_flutter/pages/page_not_found.dart';
 import 'package:flutter/material.dart';
 import '../pages/home_page.dart';
 
@@ -11,7 +13,13 @@ class MainLayout extends StatefulWidget {
 class _MainLayoutState extends State<MainLayout> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = const [HomePage()];
+  final List<Widget> _pages = const [
+    HomePage(),
+    PageNotFound(),
+    PageNotFound(),
+    PageNotFound(),
+    ProfilePage(),
+  ];
 
   void _onItemTapped(int index) {
     setState(() {
