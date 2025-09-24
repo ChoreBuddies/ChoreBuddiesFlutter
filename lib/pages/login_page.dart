@@ -1,5 +1,6 @@
 import 'package:chorebuddies_flutter/authentication/auth_manager.dart';
 import 'package:chorebuddies_flutter/generic_widgets/g_form_field.dart';
+import 'package:chorebuddies_flutter/pages/register_page.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -62,11 +63,16 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: () {
-                  authManager.login(
+                onPressed: () async {
+                  var success = await authManager.login(
                     _emailController.text.trim(),
                     _passwordController.text.trim(),
                   );
+                  if (!success) {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text('Login failed')));
+                  }
                 },
                 child: const Text('Login'),
               ),
@@ -85,7 +91,12 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
-                            print("Sign up clicked!");
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RegisterPage(),
+                              ),
+                            );
                           },
                       ),
                     ],

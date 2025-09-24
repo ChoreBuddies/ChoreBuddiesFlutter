@@ -1,6 +1,5 @@
 import 'package:chorebuddies_flutter/chores/models/chore_overview.dart';
 import 'package:chorebuddies_flutter/chores/models/status.dart';
-import 'package:chorebuddies_flutter/chores/models/chore.dart';
 import 'package:flutter/material.dart';
 
 class ChoreView extends StatelessWidget {

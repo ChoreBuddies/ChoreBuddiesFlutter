@@ -1,5 +1,4 @@
 import 'package:chorebuddies_flutter/authentication/auth_api_service.dart';
-import 'package:chorebuddies_flutter/authentication/authentication_result_dto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -43,7 +42,7 @@ class AuthManager extends ChangeNotifier {
     return false;
   }
 
-  Future<bool> register(String email, String password, String userName) async {
+  Future<bool> register(String userName, String email, String password) async {
     try {
       final success = await _authApiService.register(email, password, userName);
       return success;
