@@ -1,5 +1,4 @@
 import 'package:chorebuddies_flutter/authentication/auth_manager.dart';
-// import 'package:chorebuddies_flutter/users/user_service.dart'; // 👈 commented out
 import 'package:flutter/material.dart';
 import 'package:chorebuddies_flutter/generic_widgets/g_form_field.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +8,6 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final userService = context.read<UserService>(); // 👈 commented out
     final authManager = context.read<AuthManager>();
 
     return Scaffold(
