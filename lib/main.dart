@@ -3,6 +3,7 @@ import 'package:chorebuddies_flutter/dependencies.dart';
 import 'package:chorebuddies_flutter/layout/main_layout.dart';
 import 'package:chorebuddies_flutter/pages/login_page.dart';
 import 'package:chorebuddies_flutter/pages/page_not_found.dart';
+import 'package:chorebuddies_flutter/styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
       title: 'ChoreBuddies',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color.fromARGB(255, 78, 167, 222),
+          seedColor: AppColors.primary,
         ), // Picton Blue
         bottomNavigationBarTheme: BottomNavigationBarThemeData(
           backgroundColor: Colors.white,
