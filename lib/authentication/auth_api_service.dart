@@ -42,7 +42,7 @@ class AuthApiService {
 
     try {
       final response = await _httpClient.post(
-        Uri.parse('$baseUrl$_endpoint/register'),
+        Uri.parse('$baseUrl$_endpoint/signup'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(request.toJson()),
       );
