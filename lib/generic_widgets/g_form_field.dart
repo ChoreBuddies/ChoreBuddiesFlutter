@@ -9,7 +9,9 @@ class GFormField extends StatelessWidget {
   final TextInputType keyboardType;
   final bool enableSuggestion;
   final bool autocorrect;
+  final bool readonly;
   final Widget? suffixIcon;
+  final GestureTapCallback? onTap;
 
   const GFormField({
     super.key,
@@ -22,6 +24,8 @@ class GFormField extends StatelessWidget {
     this.enableSuggestion = true,
     this.autocorrect = true,
     this.suffixIcon,
+    this.readonly = false,
+    this.onTap,
   });
 
   @override
@@ -39,6 +43,8 @@ class GFormField extends StatelessWidget {
           hintText: hintText,
           suffixIcon: suffixIcon,
         ),
+        readOnly: readonly,
+        onTap: onTap,
       ),
     );
   }
