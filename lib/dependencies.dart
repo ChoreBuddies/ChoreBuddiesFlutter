@@ -2,6 +2,7 @@ import 'package:chorebuddies_flutter/authentication/auth_api_service.dart';
 import 'package:chorebuddies_flutter/authentication/auth_client.dart';
 import 'package:chorebuddies_flutter/authentication/auth_manager.dart';
 import 'package:chorebuddies_flutter/chores/chore_service.dart';
+import 'package:chorebuddies_flutter/households/household_service.dart';
 import 'package:chorebuddies_flutter/users/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -31,6 +32,9 @@ Widget buildDependencies({required Widget child}) {
       ),
       Provider(
         create: (ctx) => UserService(authClient: ctx.read<AuthClient>()),
+      ),
+      ChangeNotifierProvider<HouseholdService>(
+        create: (ctx) => HouseholdService(authClient: ctx.read<AuthClient>()),
       ),
     ],
     child: child,

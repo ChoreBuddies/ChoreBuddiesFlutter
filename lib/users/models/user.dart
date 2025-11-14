@@ -10,6 +10,7 @@ class User {
   DateTime dateOfBirth;
   String userName;
   String? email;
+  int? householdId;
 
   User(
     this.id,
@@ -18,6 +19,7 @@ class User {
     this.dateOfBirth,
     this.userName,
     this.email,
+    this.householdId,
   );
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
