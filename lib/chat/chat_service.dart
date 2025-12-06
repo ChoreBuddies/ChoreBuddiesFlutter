@@ -10,7 +10,7 @@ import 'package:uuid/uuid.dart';
 class ChatService extends ChangeNotifier {
   final AuthClient _authClient;
   final AuthManager _authManager;
-  final String _apiEndpoint = '/chat'; // Endpoint REST
+  final String _apiEndpoint = '/chat';
 
   HubConnection? _hubConnection;
   List<ChatMessageVm> _messages = [];
