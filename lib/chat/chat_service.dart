@@ -28,7 +28,7 @@ class ChatService extends ChangeNotifier {
 
   Future<void> loadHistory(int householdId) async {
     try {
-      final response = await _authClient.get(_authClient.uri('$_apiEndpoint/$householdId'));
+      final response = await _authClient.get(_authClient.uri(_apiEndpoint));
 
       if (response.statusCode == 200) {
         final List<dynamic> jsonList = jsonDecode(response.body);
@@ -47,10 +47,8 @@ class ChatService extends ChangeNotifier {
 
     String hubUrl = _authClient.baseUrl;
 
-    if (hubUrl.endsWith('/api')) {
-      hubUrl = hubUrl.substring(0, hubUrl.length - 4);
-    } else if (hubUrl.endsWith('/api/')) {
-      hubUrl = hubUrl.substring(0, hubUrl.length - 5);
+    if (hubUrl.endsWith('/api/v1')) {
+      hubUrl = hubUrl.substring(0, hubUrl.length - 7);
     }
 
     hubUrl = '$hubUrl/chatHub';

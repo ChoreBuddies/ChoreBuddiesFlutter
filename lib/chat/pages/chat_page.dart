@@ -25,7 +25,6 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Future<void> _initializeChat() async {
-    // 1. Pobierz ID gospodarstwa zalogowanego użytkownika
     try {
       final user = await context.read<UserService>().getMe();
       if (user.householdId != null) {
