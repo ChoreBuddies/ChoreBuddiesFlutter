@@ -1,5 +1,6 @@
 import 'package:chorebuddies_flutter/pages/profile_page.dart';
 import 'package:chorebuddies_flutter/pages/page_not_found.dart';
+import 'package:chorebuddies_flutter/chat/pages/chat_page.dart';
 import 'package:flutter/material.dart';
 import '../pages/home_page.dart';
 
@@ -17,7 +18,7 @@ class _MainLayoutState extends State<MainLayout> {
     HomePage(),
     PageNotFound(),
     PageNotFound(),
-    PageNotFound(),
+    ChatPage(),
     ProfilePage(),
   ];
 
