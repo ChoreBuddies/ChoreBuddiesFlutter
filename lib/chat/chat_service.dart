@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io'; // Do wykrywania platformy (Android localhost fix)
 import 'package:chorebuddies_flutter/authentication/auth_manager.dart';
 import 'package:chorebuddies_flutter/authentication/auth_client.dart';
 import 'package:chorebuddies_flutter/chat/models/chat_message_dto.dart';
