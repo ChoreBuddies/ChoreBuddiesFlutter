@@ -1,6 +1,5 @@
 import 'package:chorebuddies_flutter/authentication/auth_manager.dart';
 import 'package:chorebuddies_flutter/styles/button_styles.dart';
-import 'package:chorebuddies_flutter/users/models/user.dart';
 import 'package:chorebuddies_flutter/users/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:chorebuddies_flutter/generic_widgets/g_form_field.dart';
@@ -8,14 +7,14 @@ import 'package:provider/provider.dart';
 
 enum ProfilePageMode { view, edit }
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+class ProfileWidget extends StatefulWidget {
+  const ProfileWidget({super.key});
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  State<ProfileWidget> createState() => _ProfileWidgetState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfileWidgetState extends State<ProfileWidget> {
   ProfilePageMode mode = ProfilePageMode.view;
 
   int? id;
@@ -131,117 +130,114 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final authManager = context.read<AuthManager>();
-    final userService = context.read<UserService>();
 
     if (isLoading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     if (hasError) {
-      return Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Failed to load profile: $error'),
-              const SizedBox(height: 12),
-              ElevatedButton(
-                onPressed: _loadUserData,
-                child: const Text('Retry'),
-              ),
-            ],
-          ),
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Failed to load profile: $error'),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              onPressed: _loadUserData,
+              child: const Text('Retry'),
+            ),
+          ],
         ),
       );
     }
-    return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  radius: 40,
-                  backgroundColor: Colors.grey.shade300,
-                  child: const Icon(
-                    Icons.person,
-                    size: 40,
-                    color: Colors.white,
+    return Center(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircleAvatar(
+                radius: 40,
+                backgroundColor: Colors.grey.shade300,
+                child: const Icon(Icons.person, size: 40, color: Colors.white),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Expanded(
+                    child: GFormField(
+                      labelText: 'First Name',
+                      controller: firstNameController,
+                      readonly: mode != ProfilePageMode.edit,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20),
-
-                GFormField(
-                  labelText: 'First Name',
-                  controller: firstNameController,
-                  readonly: mode != ProfilePageMode.edit,
-                ),
-                GFormField(
-                  labelText: 'Last Name',
-                  controller: lastNameController,
-                  readonly: mode != ProfilePageMode.edit,
-                ),
-                GFormField(
-                  labelText: 'Email',
-                  controller: emailController,
-                  readonly: mode != ProfilePageMode.edit,
-                ),
-                GFormField(
-                  labelText: 'Date of Birth',
-                  controller: dateOfBirthController,
-                  readonly: mode != ProfilePageMode.edit,
-                  onTap: mode == ProfilePageMode.edit
-                      ? handleBirthDateClick
-                      : null,
-                ),
-
-                const SizedBox(height: 20),
-
-                if (mode == ProfilePageMode.view)
-                  ElevatedButton(
-                    onPressed: () =>
-                        setState(() => mode = ProfilePageMode.edit),
-                    child: const Text('Edit'),
+                  Expanded(
+                    child: GFormField(
+                      labelText: 'Last Name',
+                      controller: lastNameController,
+                      readonly: mode != ProfilePageMode.edit,
+                    ),
                   ),
+                ],
+              ),
+              GFormField(
+                labelText: 'Email',
+                controller: emailController,
+                readonly: mode != ProfilePageMode.edit,
+              ),
+              GFormField(
+                labelText: 'Date of Birth',
+                controller: dateOfBirthController,
+                readonly: mode != ProfilePageMode.edit,
+                onTap: mode == ProfilePageMode.edit
+                    ? handleBirthDateClick
+                    : null,
+              ),
 
-                if (mode == ProfilePageMode.edit)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () =>
-                            setState(() => mode = ProfilePageMode.view),
-                        style: ElevatedButtonStyles.cancelStyle,
-                        child: const Text('Cancel'),
-                      ),
-                      const SizedBox(width: 10),
-                      ElevatedButton(
-                        onPressed: () => _handleSaveUser(),
-                        child: isLoading
-                            ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Colors.white,
-                                ),
-                              )
-                            : const Text('Save'),
-                      ),
-                    ],
-                  ),
+              const SizedBox(height: 10),
 
-                const SizedBox(height: 20),
-
+              if (mode == ProfilePageMode.view)
                 ElevatedButton(
-                  onPressed: authManager.logout,
-                  style: ElevatedButtonStyles.cancelStyle,
-                  child: const Text('Logout'),
+                  onPressed: () => setState(() => mode = ProfilePageMode.edit),
+                  child: const Text('Edit'),
                 ),
-              ],
-            ),
+
+              if (mode == ProfilePageMode.edit)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () =>
+                          setState(() => mode = ProfilePageMode.view),
+                      style: ElevatedButtonStyles.cancelStyle,
+                      child: const Text('Cancel'),
+                    ),
+                    const SizedBox(width: 10),
+                    ElevatedButton(
+                      onPressed: () => _handleSaveUser(),
+                      child: isLoading
+                          ? const SizedBox(
+                              width: 20,
+                              height: 10,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                          : const Text('Save'),
+                    ),
+                  ],
+                ),
+
+              const SizedBox(height: 10),
+
+              ElevatedButton(
+                onPressed: authManager.logout,
+                style: ElevatedButtonStyles.cancelStyle,
+                child: const Text('Logout'),
+              ),
+            ],
           ),
         ),
       ),
