@@ -7,4 +7,6 @@ enum NotificationEvent {
   rewardRequest,
   @JsonValue(3)
   choreCompleted,
+  @JsonValue(4)
+  newMessage,
 }
