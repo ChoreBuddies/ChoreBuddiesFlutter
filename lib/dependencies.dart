@@ -4,6 +4,7 @@ import 'package:chorebuddies_flutter/authentication/auth_manager.dart';
 import 'package:chorebuddies_flutter/chores/chore_service.dart';
 import 'package:chorebuddies_flutter/households/household_service.dart';
 import 'package:chorebuddies_flutter/notifications/notification_preferences_service.dart';
+import 'package:chorebuddies_flutter/notifications/notification_service.dart';
 import 'package:chorebuddies_flutter/users/user_service.dart';
 import 'package:chorebuddies_flutter/chat/chat_service.dart';
 import 'package:flutter/material.dart';
@@ -42,6 +43,7 @@ Widget buildDependencies({required Widget child}) {
         create: (ctx) =>
             NotificationPreferencesService(authClient: ctx.read<AuthClient>()),
       ),
+      Provider<NotificationService>(create: (ctx) => NotificationService()),
       ChangeNotifierProvider<ChatService>(
         create: (ctx) => ChatService(
           authClient: ctx.read<AuthClient>(),

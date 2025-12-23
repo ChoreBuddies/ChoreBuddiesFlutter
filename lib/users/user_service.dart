@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:chorebuddies_flutter/authentication/auth_client.dart';
+import 'package:chorebuddies_flutter/users/models/update_fcmtoken_dto.dart';
 import 'package:chorebuddies_flutter/users/models/update_user_dto.dart';
 import 'package:chorebuddies_flutter/users/models/user.dart';
 
@@ -52,6 +53,27 @@ class UserService {
       }
     } catch (e) {
       throw Exception('Error updating current user: $e');
+    }
+  }
+
+  Future<bool> updateFcmToken(token) async {
+    var updateFcmtokenDto = UpdateFcmtokenDto(token);
+    try {
+      final response = await _authClient.put(
+        _authClient.uri('$endpoint/fcmtoken'),
+        body: jsonEncode(updateFcmtokenDto.toJson()),
+        headers: {'Content-Type': 'application/json'},
+      );
+      if (response.statusCode == 200) {
+        final result = jsonDecode(response.body);
+        return result == true;
+      } else {
+        throw Exception(
+          'Failed to update FCM token: ${response.statusCode} ${response.body}',
+        );
+      }
+    } catch (e) {
+      throw Exception('Error updating FCM Token: $e');
     }
   }
 }

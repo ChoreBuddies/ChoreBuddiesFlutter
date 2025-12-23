@@ -26,6 +26,7 @@ const _$NotificationEventEnumMap = {
   NotificationEvent.newChore: 1,
   NotificationEvent.rewardRequest: 2,
   NotificationEvent.choreCompleted: 3,
+  NotificationEvent.newMessage: 4,
 };
 
 const _$NotificationChannelEnumMap = {
