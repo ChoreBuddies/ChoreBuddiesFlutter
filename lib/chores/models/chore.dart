@@ -5,10 +5,10 @@ part 'chore.g.dart';
 
 @JsonSerializable()
 class Chore {
-  String id;
+  int id;
   String name;
   String description;
-  String? assignedTo;
+  int? assignedTo;
   DateTime dueDate;
   Status status;
   String room;
