@@ -42,9 +42,23 @@ class AuthManager extends ChangeNotifier {
     return false;
   }
 
-  Future<bool> register(String userName, String email, String password) async {
+  Future<bool> register(
+    String userName,
+    String email,
+    String password,
+    String firstName,
+    String lastName,
+    DateTime dateOfBirth,
+  ) async {
     try {
-      final success = await _authApiService.register(email, password, userName);
+      final success = await _authApiService.register(
+        email,
+        password,
+        userName,
+        firstName,
+        lastName,
+        dateOfBirth,
+      );
       return success;
     } catch (e) {
       debugPrint('Register failed: $e');

@@ -1,6 +1,8 @@
 import 'package:chorebuddies_flutter/authentication/auth_manager.dart';
 import 'package:chorebuddies_flutter/styles/button_styles.dart';
 import 'package:chorebuddies_flutter/users/user_service.dart';
+import 'package:chorebuddies_flutter/utils/formatters.dart';
+import 'package:chorebuddies_flutter/utils/validators.dart';
 import 'package:flutter/material.dart';
 import 'package:chorebuddies_flutter/generic_widgets/g_form_field.dart';
 import 'package:provider/provider.dart';
@@ -36,6 +38,18 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   }
 
   Future<void> _handleSaveUser() async {
+    final email = emailController.text.trim();
+    final emailError = email.isEmpty
+        ? 'Email is required'
+        : Validators.validate(email, ValidationType.email);
+
+    if (emailError != null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(emailError)));
+      return;
+    }
+
     final userService = context.read<UserService>();
 
     setState(() => isLoading = true);
@@ -46,7 +60,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
         lastNameController.text.trim(),
         dateOfBirth,
         userNameController.text.trim(),
-        emailController.text.trim(),
+        email,
       );
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -78,7 +92,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
         lastNameController.text = user.lastName ?? '';
         emailController.text = user.email ?? "";
         dateOfBirth = user.dateOfBirth;
-        dateOfBirthController.text = _formatDate(user.dateOfBirth);
+        dateOfBirthController.text = formatDate(user.dateOfBirth);
         isLoading = false;
         hasError = false;
         error = '';
@@ -92,17 +106,12 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     }
   }
 
-  String _formatDate(DateTime? date) {
-    if (date == null) return '';
-    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
-  }
-
   Future<void> handleBirthDateClick() async {
     final DateTime initialDate = dateOfBirth ?? DateTime(2000);
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: initialDate,
-      firstDate: DateTime(0000),
+      firstDate: DateTime(1900),
       lastDate: DateTime.now(),
       helpText: 'Select your date of birth',
       cancelText: 'Cancel',
@@ -112,7 +121,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     if (pickedDate != null) {
       setState(() {
         dateOfBirth = pickedDate;
-        dateOfBirthController.text = _formatDate(pickedDate);
+        dateOfBirthController.text = formatDate(pickedDate);
       });
     }
   }
@@ -185,6 +194,10 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                 labelText: 'Email',
                 controller: emailController,
                 readonly: mode != ProfilePageMode.edit,
+                validator: (value) {
+                  if (value == null || value.isEmpty) return 'Required';
+                  return Validators.validate(value, ValidationType.email);
+                },
               ),
               GFormField(
                 labelText: 'Date of Birth',
