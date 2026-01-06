@@ -52,8 +52,9 @@ class _HomePageState extends State<HomePage> {
 
             final progress = totalCount == 0 ? 0.0 : completedCount / totalCount;
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            return Scaffold(
+              appBar: AppBar(title: const Text("Home")),
+              body: ListView(
               children: [
                 Text(
                   'Hello, ${user.userName}!',
@@ -62,7 +63,6 @@ class _HomePageState extends State<HomePage> {
 
                 const SizedBox(height: 16),
 
-                // 📊 Progress bar
                 Text(
                   'Chores completion: $completedCount / ${items.length}',
                 ),
@@ -75,7 +75,6 @@ class _HomePageState extends State<HomePage> {
 
                 const SizedBox(height: 16),
 
-                // 📋 Chores list
                 Expanded(
                   child: ListView.builder(
                     itemCount: items.length,
@@ -92,6 +91,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ],
+              ),
             );
           },
         ),
