@@ -77,11 +77,10 @@ class _HomePageState extends State<HomePage> {
                         return ChoreView(
                           choreOverview: chores[index],
                           onChanged: (value) => setState(() {
-                            if(value != null)
+                            if(value != null && value)
                             {
-                              chores[index] = chores[index].copyWith(
-                              newStatus: value ? Status.completed : Status.assigned,
-                            );}}),
+                              choreService.markChoreAsDone(chores[index]);
+                            }}),
                         );
                       },
                       childCount: chores.length,
