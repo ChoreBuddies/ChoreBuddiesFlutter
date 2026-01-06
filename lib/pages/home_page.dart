@@ -43,12 +43,11 @@ class _HomePageState extends State<HomePage> {
 
             final user = snapshot.data![1] as User;
 
-            final items = snapshot.data!;
-            items.sort((a, b) => a.dueDate.compareTo(b.dueDate));
+            chores.sort((a, b) => a.dueDate.compareTo(b.dueDate));
             
-            final completedCount = items.where((chore) => chore.status == Status.completed).length;
+            final completedCount = chores.where((chore) => chore.status == Status.completed).length;
 
-            final totalCount = items.length;
+            final totalCount = chores.length;
 
             final progress = totalCount == 0 ? 0.0 : completedCount / totalCount;
 
@@ -64,7 +63,7 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(height: 16),
 
                 Text(
-                  'Chores completion: $completedCount / ${items.length}',
+                  'Chores completion: $completedCount / ${chores.length}',
                 ),
                 const SizedBox(height: 8),
                 LinearProgressIndicator(
@@ -77,10 +76,10 @@ class _HomePageState extends State<HomePage> {
 
                 Expanded(
                   child: ListView.builder(
-                    itemCount: items.length,
+                    itemCount: chores.length,
                     itemBuilder: (context, index) {
                       return ChoreView(
-                        choreOverview: items[index],
+                        choreOverview: chores[index],
                         onChanged: (value) {
                           setState(() {
                             val = value;
