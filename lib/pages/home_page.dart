@@ -30,11 +30,11 @@ class _HomePageState extends State<HomePage> {
             userService.getMe(),
           ]),
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
+            if (snapshot.connectionState == ConnectionState.waiting || !snapshot.hasData) {
               return const CircularProgressIndicator();
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
-            } 
+            }  
             
             final chores = snapshot.data![0] as List<ChoreOverview>;
             if (chores.isEmpty) {
