@@ -53,43 +53,36 @@ class _HomePageState extends State<HomePage> {
 
             return Scaffold(
               appBar: AppBar(title: const Text("Home")),
-              body: ListView(
-              children: [
-                Text(
-                  'Hello, ${user.userName}!',
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
-
-                const SizedBox(height: 16),
-
-                Text(
-                  'Chores completion: $completedCount / ${chores.length}',
-                ),
-                const SizedBox(height: 8),
-                LinearProgressIndicator(
-                  value: progress,
-                  minHeight: 8,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-
-                const SizedBox(height: 16),
-
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: chores.length,
-                    itemBuilder: (context, index) {
-                      return ChoreView(
-                        choreOverview: chores[index],
-                        onChanged: (value) {
-                          setState(() {
-                            val = value;
-                          });
-                        },
-                      );
-                    },
+              body: CustomScrollView(
+                slivers: [
+                  SliverPadding(
+                    padding: const EdgeInsets.all(8),
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate([
+                        Text(
+                          'Hello, ${user.userName}',
+                          style: Theme.of(context).textTheme.headlineSmall,
+                        ),
+                        const SizedBox(height: 16),
+                        Text('Chores completion: $completedCount / ${chores.length}'),
+                        const SizedBox(height: 8),
+                        LinearProgressIndicator(value: progress),
+                        const SizedBox(height: 16),
+                      ]),
+                    ),
                   ),
-                ),
-              ],
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        return ChoreView(
+                          choreOverview: chores[index],
+                          onChanged: (_) => setState(() {}),
+                        );
+                      },
+                      childCount: chores.length,
+                    ),
+                  ),
+                ],
               ),
             );
           },
