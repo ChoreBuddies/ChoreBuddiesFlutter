@@ -18,4 +18,9 @@ class ChoreOverview {
       _$ChoreOverviewFromJson(json);
 
   Map<String, dynamic> toJson() => _$ChoreOverviewToJson(this);
+
+  ChoreOverview copyWith({required Status newStatus}) 
+  {
+    return ChoreOverview(id, name, assignedTo, newStatus, room, dueDate);
+  }
 }

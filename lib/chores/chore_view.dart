@@ -16,7 +16,7 @@ class ChoreView extends StatelessWidget {
                     fontWeight: FontWeight.bold,
               ),),
       subtitle: Text(choreOverview.room),
-      secondary: const Icon(Icons.check_box_outline_blank),
+      secondary: const Icon(Icons.check_box_outlined),
       controlAffinity: ListTileControlAffinity.trailing,
       value: choreOverview.status == Status.completed,
       onChanged: onChanged,
