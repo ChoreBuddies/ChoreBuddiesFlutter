@@ -1,37 +1,97 @@
 import 'package:chorebuddies_flutter/chores/chore_service.dart';
 import 'package:chorebuddies_flutter/chores/chore_view.dart';
+import 'package:chorebuddies_flutter/chores/models/status.dart';
+import 'package:chorebuddies_flutter/users/models/user.dart';
+import 'package:chorebuddies_flutter/users/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:chorebuddies_flutter/chores/models/chore_overview.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+class _HomePageState extends State<HomePage> {
+  bool? val = false;
 
   @override
   Widget build(BuildContext context) {
     final choreService = context.read<ChoreService>();
+    final userService = context.read<UserService>();
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Center(
-        child: FutureBuilder<List<ChoreOverview>>(
-          future: choreService.getChores(),
+        child: FutureBuilder<List<dynamic>>(
+          future: Future.wait([
+            choreService.getChores(),
+            userService.getMe(),
+          ]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator();
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            } 
+            
+            final chores = snapshot.data![0] as List<ChoreOverview>;
+            if (chores.isEmpty) {
               return const Text('No chores found');
             }
 
-            final items = snapshot.data!;
+            final user = snapshot.data![1] as User;
 
-            return ListView.builder(
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                return ChoreView(choreOverview: items[index]);
-              },
+            final items = snapshot.data!;
+            items.sort((a, b) => a.dueDate.compareTo(b.dueDate));
+            
+            final completedCount = items.where((chore) => chore.status == Status.completed).length;
+
+            final totalCount = items.length;
+
+            final progress = totalCount == 0 ? 0.0 : completedCount / totalCount;
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Hello, ${user.userName}!',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+
+                const SizedBox(height: 16),
+
+                // 📊 Progress bar
+                Text(
+                  'Chores completion: $completedCount / ${items.length}',
+                ),
+                const SizedBox(height: 8),
+                LinearProgressIndicator(
+                  value: progress,
+                  minHeight: 8,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+
+                const SizedBox(height: 16),
+
+                // 📋 Chores list
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: items.length,
+                    itemBuilder: (context, index) {
+                      return ChoreView(
+                        choreOverview: items[index],
+                        onChanged: (value) {
+                          setState(() {
+                            val = value;
+                          });
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
             );
           },
         ),
