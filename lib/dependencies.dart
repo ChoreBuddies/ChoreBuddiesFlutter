@@ -7,15 +7,13 @@ import 'package:chorebuddies_flutter/notifications/notification_preferences_serv
 import 'package:chorebuddies_flutter/notifications/notification_service.dart';
 import 'package:chorebuddies_flutter/users/user_service.dart';
 import 'package:chorebuddies_flutter/chat/chat_service.dart';
+import 'package:chorebuddies_flutter/core/app_config.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 
 Widget buildDependencies({required Widget child}) {
-  final baseUrl = dotenv.env['base_url'];
-  if (baseUrl == null || baseUrl.isEmpty) {
-    throw Exception('Missing required environment variable: base_url');
-  }
+  final baseUrl = AppConfig.apiBaseUrl;
+  debugPrint("🔧 App configured with Base URL: $baseUrl");
 
   return MultiProvider(
     providers: [
