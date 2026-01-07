@@ -33,11 +33,21 @@ class AuthApiService {
     }
   }
 
-  Future<bool> register(String email, String password, String userName) async {
+  Future<bool> register(
+    String email,
+    String password,
+    String userName,
+    String firstName,
+    String lastName,
+    DateTime dateOfBirth,
+  ) async {
     final request = RegisterRequestDto(
       email: email,
       password: password,
       userName: userName,
+      firstName: firstName,
+      lastName: lastName,
+      dateOfBirth: dateOfBirth,
     );
 
     try {
