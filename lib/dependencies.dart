@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 
 Widget buildDependencies({required Widget child}) {
   final baseUrl = AppConfig.apiBaseUrl;
-  debugPrint("🔧 App configured with Base URL: $baseUrl");
+  debugPrint("App configured with Base URL: $baseUrl");
 
   return MultiProvider(
     providers: [
