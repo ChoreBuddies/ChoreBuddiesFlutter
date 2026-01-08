@@ -9,4 +9,6 @@ enum NotificationEvent {
   choreCompleted,
   @JsonValue(4)
   newMessage,
+  @JsonValue(5)
+  reminder,
 }

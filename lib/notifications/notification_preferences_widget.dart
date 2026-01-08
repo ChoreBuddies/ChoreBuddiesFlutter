@@ -1,6 +1,7 @@
 import 'package:chorebuddies_flutter/notifications/models/notificaiton_event.dart';
 import 'package:chorebuddies_flutter/notifications/models/notification_preferences_dto.dart';
 import 'package:chorebuddies_flutter/notifications/notification_preferences_service.dart';
+import 'package:chorebuddies_flutter/utils/formatters.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -44,19 +45,6 @@ class _NotificationPreferencesWidgetState
     }
   }
 
-  String eventName(NotificationEvent event) {
-    switch (event) {
-      case NotificationEvent.newChore:
-        return "New Chore";
-      case NotificationEvent.choreCompleted:
-        return "Chore Completed";
-      case NotificationEvent.rewardRequest:
-        return "Reward Request";
-      default:
-        return event.toString();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     if (loading) {
@@ -82,7 +70,7 @@ class _NotificationPreferencesWidgetState
             child: Column(
               children: [
                 Text(
-                  eventName(entry.key),
+                  formatEventName(entry.key),
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
