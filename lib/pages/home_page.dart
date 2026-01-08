@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:chorebuddies_flutter/chores/chore_service.dart';
 import 'package:chorebuddies_flutter/chores/chore_view.dart';
 import 'package:chorebuddies_flutter/chores/models/status.dart';
@@ -36,7 +38,7 @@ class _HomePageState extends State<HomePage> {
               return Text('Error: ${snapshot.error}');
             }  
             
-            final chores = snapshot.data![0] as List<ChoreOverview>;
+            var chores = snapshot.data![0] as List<ChoreOverview>;
             if (chores.isEmpty) {
               return const Text('No chores found');
             }
@@ -51,6 +53,12 @@ class _HomePageState extends State<HomePage> {
 
             final progress = totalCount == 0 ? 0.0 : completedCount / totalCount;
 
+            chores = chores.where((c) => c.status == Status.assigned).toList();
+
+            final childrenCount = math.max(1, chores.length * 2 - 1);
+
+            final actualCount = chores.length;
+
             return Scaffold(
               appBar: AppBar(title: const Text("Home")),
               body: CustomScrollView(
@@ -64,7 +72,7 @@ class _HomePageState extends State<HomePage> {
                           style: Theme.of(context).textTheme.headlineSmall,
                         ),
                         const SizedBox(height: 16),
-                        Text('Chores completion: $completedCount / ${chores.length}'),
+                        Text('Chores completion: $completedCount / $totalCount'),
                         const SizedBox(height: 8),
                         LinearProgressIndicator(value: progress),
                         const SizedBox(height: 16),
@@ -74,16 +82,31 @@ class _HomePageState extends State<HomePage> {
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
+                        if(actualCount == 0 && index == 0)
+                        {
+                          return Text('Congratulations, You are done for today!',
+                          style: Theme.of(context).textTheme.bodyLarge);
+                        }
+                        final int itemIndex = index ~/ 2;
+                        if (index.isEven) {
                         return ChoreView(
-                          choreOverview: chores[index],
+                          choreOverview: chores[itemIndex],
                           onChanged: (value) => setState(() {
                             if(value != null && value)
                             {
-                              choreService.markChoreAsDone(chores[index]);
+                              choreService.markChoreAsDone(chores[itemIndex]);
                             }}),
                         );
+                        }
+                        return Divider(height: 0, color: Colors.grey);
                       },
-                      childCount: chores.length,
+                      semanticIndexCallback: (Widget widget, int localIndex) {
+                        if (localIndex.isEven) {
+                          return localIndex ~/ 2;
+                        }
+                        return null;
+                      },
+                      childCount: childrenCount,
                     ),
                   ),
                 ],
