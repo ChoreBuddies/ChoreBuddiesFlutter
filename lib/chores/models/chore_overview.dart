@@ -5,13 +5,14 @@ part 'chore_overview.g.dart';
 
 @JsonSerializable()
 class ChoreOverview {
-  String id;
+  int id;
   String name;
-  String? assignedTo;
+  int? assignedTo;
   Status status;
   String room;
+  DateTime dueDate;
 
-  ChoreOverview(this.id, this.name, this.assignedTo, this.status, this.room);
+  ChoreOverview(this.id, this.name, this.assignedTo, this.status, this.room, this.dueDate);
 
   factory ChoreOverview.fromJson(Map<String, dynamic> json) =>
       _$ChoreOverviewFromJson(json);

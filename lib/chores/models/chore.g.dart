@@ -7,10 +7,10 @@ part of 'chore.dart';
 // **************************************************************************
 
 Chore _$ChoreFromJson(Map<String, dynamic> json) => Chore(
-  json['id'] as String,
+  (json['id'] as num).toInt(),
   json['name'] as String,
   json['description'] as String,
-  json['assignedTo'] as String?,
+  (json['assignedTo'] as num?)?.toInt(),
   DateTime.parse(json['dueDate'] as String),
   $enumDecode(_$StatusEnumMap, json['status']),
   json['room'] as String,

@@ -4,18 +4,21 @@ import 'package:flutter/material.dart';
 
 class ChoreView extends StatelessWidget {
   final ChoreOverview choreOverview;
+  final ValueChanged<bool?> onChanged;
 
-  const ChoreView({super.key, required this.choreOverview});
+  const ChoreView({super.key, required this.choreOverview, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
     return CheckboxListTile(
-      title: Text(choreOverview.name),
+      title: Text(choreOverview.name,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+              ),),
       subtitle: Text(choreOverview.room),
-      secondary: FlutterLogo(),
       controlAffinity: ListTileControlAffinity.trailing,
       value: choreOverview.status == Status.completed,
-      onChanged: (value) => {},
+      onChanged: onChanged,
     );
   }
 }

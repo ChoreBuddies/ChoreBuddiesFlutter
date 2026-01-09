@@ -8,11 +8,12 @@ part of 'chore_overview.dart';
 
 ChoreOverview _$ChoreOverviewFromJson(Map<String, dynamic> json) =>
     ChoreOverview(
-      json['id'] as String,
+      (json['id'] as num).toInt(),
       json['name'] as String,
-      json['assignedTo'] as String?,
+      (json['assignedTo'] as num?)?.toInt(),
       $enumDecode(_$StatusEnumMap, json['status']),
       json['room'] as String,
+      DateTime.parse(json['dueDate'] as String),
     );
 
 Map<String, dynamic> _$ChoreOverviewToJson(ChoreOverview instance) =>
@@ -22,6 +23,7 @@ Map<String, dynamic> _$ChoreOverviewToJson(ChoreOverview instance) =>
       'assignedTo': instance.assignedTo,
       'status': _$StatusEnumMap[instance.status]!,
       'room': instance.room,
+      'dueDate': instance.dueDate.toIso8601String(),
     };
 
 const _$StatusEnumMap = {
