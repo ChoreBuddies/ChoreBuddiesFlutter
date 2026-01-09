@@ -1,4 +1,4 @@
-import 'package:chorebuddies_flutter/users/profile_widget.dart';
+import 'package:chorebuddies_flutter/pages/chores_page.dart';
 import 'package:chorebuddies_flutter/pages/page_not_found.dart';
 import 'package:chorebuddies_flutter/chat/pages/chat_page.dart';
 import 'package:chorebuddies_flutter/pages/settings_page.dart';
@@ -17,7 +17,7 @@ class _MainLayoutState extends State<MainLayout> {
 
   final List<Widget> _pages = const [
     HomePage(),
-    PageNotFound(),
+    ChoresPage(),
     PageNotFound(),
     ChatPage(),
     SettingsPage(),
