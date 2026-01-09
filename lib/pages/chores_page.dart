@@ -43,11 +43,12 @@ class _ChoresPageState extends State<ChoresPage> {
                 itemBuilder: (context, index) {
                   return ChoreView(
                     choreOverview: chores[index],
-                    onChanged: (value) => setState(() {
+                    onCheckBoxChanged: (value) => setState(() {
                       if (value != null && value) {
                         choreService.markChoreAsDone(chores[index]);
                       }
                     }),
+                    onTileTap: () => {}, //TODO: Change to navigate to chore page when done
                   );
                 },
               );
