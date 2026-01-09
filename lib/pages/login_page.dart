@@ -47,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
               GFormField(
                 labelText: 'Password',
                 controller: _passwordController,
-                obscureText: true,
+                obscureText: !_passwordVisible,
                 enableSuggestion: false,
                 autocorrect: false,
                 suffixIcon: IconButton(
