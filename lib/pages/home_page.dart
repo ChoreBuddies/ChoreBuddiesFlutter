@@ -91,11 +91,12 @@ class _HomePageState extends State<HomePage> {
                         if (index.isEven) {
                         return ChoreView(
                           choreOverview: chores[itemIndex],
-                          onChanged: (value) => setState(() {
+                          onCheckBoxChanged: (value) => setState(() {
                             if(value != null && value)
                             {
                               choreService.markChoreAsDone(chores[itemIndex]);
                             }}),
+                            onTileTap: () => {}, //TODO: change as in homepage
                         );
                         }
                         return Divider(height: 0, color: Colors.grey);
