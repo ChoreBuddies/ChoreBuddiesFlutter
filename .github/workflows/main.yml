@@ -1,0 +1,44 @@
+name: Flutter CI
+
+# Trigger the action on push to main/master branches or on Pull Request
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout repository code
+      - uses: actions/checkout@v4
+
+      # 2. Setup Java (required by Android tools in Flutter)
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      # 3. Install Flutter
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      # 4. Install dependencies from pubspec.yaml
+      - name: Install dependencies
+        run: flutter pub get
+
+      # 5. Run code generation (Required by json_serializable and build_runner in your project)
+      - name: Run code generation
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      # 6. Analyze code (Linter)
+      - name: Analyze code
+        run: flutter analyze
+
+      # 7. Run tests
+      - name: Run tests
+        run: flutter test
