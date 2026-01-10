@@ -7,14 +7,14 @@ part 'chore_dto.g.dart';
 class ChoreDto {
   int id;
   String name;
-  String description;
-  int? assignedTo;
+  String? description;
+  int? userId;
   DateTime dueDate;
   Status status;
-  String room;
-  int rewardPointsCount;
+  String? room;
+  int rewardPointsCount = 0;
 
-  ChoreDto(this.id, this.name, this.description, this.assignedTo, this.status, this.room, this.rewardPointsCount, this.dueDate);
+  ChoreDto(this.id, this.name, this.description, this.userId, this.status, this.room, this.rewardPointsCount, this.dueDate);
 
   factory ChoreDto.fromJson(Map<String, dynamic> json) =>
       _$ChoreDtoFromJson(json);

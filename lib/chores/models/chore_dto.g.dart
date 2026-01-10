@@ -9,10 +9,10 @@ part of 'chore_dto.dart';
 ChoreDto _$ChoreDtoFromJson(Map<String, dynamic> json) => ChoreDto(
   (json['id'] as num).toInt(),
   json['name'] as String,
-  json['description'] as String,
-  (json['assignedTo'] as num?)?.toInt(),
+  json['description'] as String?,
+  (json['userId'] as num?)?.toInt(),
   $enumDecode(_$StatusEnumMap, json['status']),
-  json['room'] as String,
+  json['room'] as String?,
   (json['rewardPointsCount'] as num).toInt(),
   DateTime.parse(json['dueDate'] as String),
 );
@@ -21,7 +21,7 @@ Map<String, dynamic> _$ChoreDtoToJson(ChoreDto instance) => <String, dynamic>{
   'id': instance.id,
   'name': instance.name,
   'description': instance.description,
-  'assignedTo': instance.assignedTo,
+  'userId': instance.userId,
   'dueDate': instance.dueDate.toIso8601String(),
   'status': _$StatusEnumMap[instance.status]!,
   'room': instance.room,

@@ -34,7 +34,7 @@ class ChoreService {
   }
     Future<ChoreDto?> createChore(ChoreCreate chore) async {
     try {
-      final response = await _authClient.post(_authClient.uri('$endpoint/add'));
+      final response = await _authClient.post(_authClient.uri('$endpoint/add'),  body: jsonEncode(chore));
       final Map<String, dynamic> jsonChore = jsonDecode(response.body);
 
       return ChoreDto.fromJson(jsonChore);
@@ -44,7 +44,7 @@ class ChoreService {
   }
     Future<ChoreDto?> updateChore(ChoreDto chore) async {
     try {
-      final response = await _authClient.post(_authClient.uri('$endpoint/update'));
+      final response = await _authClient.post(_authClient.uri('$endpoint/update'),  body: jsonEncode(chore));
       final Map<String, dynamic> jsonChore = jsonDecode(response.body);
 
       return ChoreDto.fromJson(jsonChore);

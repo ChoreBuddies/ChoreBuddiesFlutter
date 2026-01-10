@@ -6,14 +6,14 @@ part 'chore_create.g.dart';
 @JsonSerializable()
 class ChoreCreate {
   String name;
-  String description;
-  int? assignedTo;
+  String? description;
+  int? userId;
   DateTime dueDate;
   Status status;
-  String room;
+  String? room;
   int rewardPointsCount;
 
-  ChoreCreate(this.name, this.description, this.assignedTo, this.status, this.room, this.rewardPointsCount, this.dueDate);
+  ChoreCreate(this.name, this.description, this.userId, this.status, this.room, this.rewardPointsCount, this.dueDate);
 
   factory ChoreCreate.fromJson(Map<String, dynamic> json) =>
       _$ChoreCreateFromJson(json);
