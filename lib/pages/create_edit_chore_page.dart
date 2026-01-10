@@ -1,5 +1,4 @@
 import 'package:chorebuddies_flutter/chores/chore_service.dart';
-import 'package:chorebuddies_flutter/chores/models/chore.dart';
 import 'package:chorebuddies_flutter/chores/models/chore_create.dart';
 import 'package:chorebuddies_flutter/chores/models/chore_dto.dart';
 import 'package:chorebuddies_flutter/chores/models/status.dart';
@@ -218,16 +217,45 @@ class _CreateChorePageState extends State<CreateChorePage> {
 
                   if (mode == ChorePageMode.view)
                     const SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: () => setState(() => mode = ChorePageMode.edit),
-                      child: const Text('Edit'),
-                    ),
-                    const SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: () => choreService.markChoreAsDone(chore!.id),
-                      child: const Text('Mark As Done'),
-                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: () => setState(() => mode = ChorePageMode.edit),
+                            icon: const Icon(Icons.edit),
+                            label: const Text('Edit'),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: ElevatedButton.icon(
+                        onPressed: () async {
+                        final ok = await showDialog<bool>(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            title: const Text('Confirm'),
+                            content: const Text('Mark this chore as done?'),
+                            actions: [
+                              TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
+                              ElevatedButton(onPressed: () => Navigator.pop(context, true), child: const Text('OK')),
+                            ],
+                          ),
+                        );
 
+                        if (ok == true) {
+                          choreService.markChoreAsDone(chore!.id);
+                          }
+                        },
+                        icon: const Icon(Icons.check),
+                        label: const Text('Mark as done'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.white,
+                             ),
+                            ),
+                          ),
+                        ],
+                      ),
                   if (mode == ChorePageMode.edit)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
