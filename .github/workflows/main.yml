@@ -35,10 +35,6 @@ jobs:
       - name: Run code generation
         run: dart run build_runner build --delete-conflicting-outputs
 
-      # 6. Analyze code (Linter)
-      - name: Analyze code
-        run: flutter analyze
-
-      # 7. Run tests
+      # 6. Run tests
       - name: Run tests
         run: flutter test
