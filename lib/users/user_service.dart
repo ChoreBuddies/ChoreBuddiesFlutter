@@ -21,6 +21,19 @@ class UserService {
     }
   }
 
+  Future<List<User>> getUsersFromHousehold() async {
+      try {
+        final response = await _authClient.get(_authClient.uri('$endpoint/household'));
+        final List<dynamic> usersJson = jsonDecode(response.body);
+  
+          return usersJson
+            .map((json) => User.fromJson(json as Map<String, dynamic>))
+            .toList();
+      } catch (e) {
+      throw Exception('Error fetching users from household: $e');
+    }
+  }
+
   Future<bool> updateMe(
     id,
     firstName,

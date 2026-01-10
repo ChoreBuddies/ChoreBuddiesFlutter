@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:chorebuddies_flutter/chores/chore_service.dart';
 import 'package:chorebuddies_flutter/chores/chore_view.dart';
 import 'package:chorebuddies_flutter/chores/models/status.dart';
+import 'package:chorebuddies_flutter/pages/create_edit_chore_page.dart';
 import 'package:chorebuddies_flutter/users/models/user.dart';
 import 'package:chorebuddies_flutter/users/user_service.dart';
 import 'package:flutter/material.dart';
@@ -94,9 +95,14 @@ class _HomePageState extends State<HomePage> {
                           onCheckBoxChanged: (value) => setState(() {
                             if(value != null && value)
                             {
-                              choreService.markChoreAsDone(chores[itemIndex]);
+                              choreService.markChoreAsDone(chores[itemIndex].id);
                             }}),
-                            onTileTap: () => {}, //TODO: change as in homepage
+                            onTileTap: () => {Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => CreateChorePage(id: chores[itemIndex].id),
+                                                ),
+                                              )},
                         );
                         }
                         return Divider(height: 0, color: Colors.grey);

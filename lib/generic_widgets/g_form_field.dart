@@ -12,6 +12,7 @@ class GFormField extends StatelessWidget {
   final bool readonly;
   final Widget? suffixIcon;
   final GestureTapCallback? onTap;
+  final int? maxLines;
 
   const GFormField({
     super.key,
@@ -26,6 +27,7 @@ class GFormField extends StatelessWidget {
     this.suffixIcon,
     this.readonly = false,
     this.onTap,
+    this.maxLines = 1,
   });
 
   @override
@@ -36,7 +38,7 @@ class GFormField extends StatelessWidget {
         controller: controller,
         validator: validator,
         obscureText: obscureText,
-        keyboardType: keyboardType,
+        keyboardType: maxLines == 1 ? keyboardType : TextInputType.multiline,
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
           labelText: labelText,
@@ -45,6 +47,7 @@ class GFormField extends StatelessWidget {
         ),
         readOnly: readonly,
         onTap: onTap,
+        maxLines: maxLines,
       ),
     );
   }
