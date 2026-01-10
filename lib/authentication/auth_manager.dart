@@ -84,7 +84,10 @@ class AuthManager extends ChangeNotifier {
   Future<bool> refreshTokens() async {
     if (refreshToken != null) {
       try {
-        final newTokens = await _authApiService.refreshTokens(refreshToken!);
+        final newTokens = await _authApiService.refreshTokens(
+          refreshToken!,
+          _token!,
+        );
         await storeTokens(newTokens.accessToken, newTokens.refreshToken);
         return true;
       } catch (Exception) {
