@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:chorebuddies_flutter/authentication/refresh_tokens_dto.dart';
 import 'package:http/http.dart' as http;
 import 'authentication_result_dto.dart';
 import 'login_request_dto.dart';
@@ -63,14 +64,20 @@ class AuthApiService {
     }
   }
 
-  Future<AuthenticationResultDto> refreshTokens(String refreshToken) async {
-    final request = {'refreshToken': refreshToken};
+  Future<AuthenticationResultDto> refreshTokens(
+    String refreshToken,
+    String accessToken,
+  ) async {
+    final request = RefreshTokensDto(
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    );
 
     try {
       final response = await _httpClient.post(
         Uri.parse('$baseUrl$_endpoint/refresh'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(request),
+        body: jsonEncode(request.toJson()),
       );
 
       if (response.statusCode != 200) {

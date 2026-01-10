@@ -19,12 +19,13 @@ class AuthClient extends http.BaseClient {
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
     final token = _authManager.token;
-
     if (token != null) {
       request.headers['Authorization'] = 'Bearer $token';
     }
 
     request.headers['Content-Type'] = 'application/json';
+    final clone = _cloneRequest(request);
+
     var response = await _inner.send(request);
 
     if (response.statusCode == 401) {
@@ -32,11 +33,20 @@ class AuthClient extends http.BaseClient {
       if (refreshed) {
         final newToken = _authManager.token;
         if (newToken != null) {
-          request.headers['Authorization'] = 'Bearer $newToken';
-          response = await _inner.send(request);
+          clone.headers['Authorization'] = 'Bearer $newToken';
+          response = await _inner.send(clone);
         }
       }
     }
     return response;
+  }
+
+  http.BaseRequest _cloneRequest(http.BaseRequest request) {
+    final newRequest = http.Request(request.method, request.url);
+    newRequest.headers.addAll(request.headers);
+    if (request is http.Request) {
+      newRequest.bodyBytes = request.bodyBytes;
+    }
+    return newRequest;
   }
 }
