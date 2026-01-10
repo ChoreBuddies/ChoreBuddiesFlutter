@@ -1,0 +1,22 @@
+import 'package:chorebuddies_flutter/chores/models/status.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'chore_create.g.dart';
+
+@JsonSerializable()
+class ChoreCreate {
+  String name;
+  String description;
+  int? assignedTo;
+  DateTime dueDate;
+  Status status;
+  String room;
+  int rewardPointsCount;
+
+  ChoreCreate(this.name, this.description, this.assignedTo, this.status, this.room, this.rewardPointsCount, this.dueDate);
+
+  factory ChoreCreate.fromJson(Map<String, dynamic> json) =>
+      _$ChoreCreateFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ChoreCreateToJson(this);
+}

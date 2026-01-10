@@ -1,5 +1,6 @@
 import 'package:chorebuddies_flutter/chores/chore_service.dart';
 import 'package:chorebuddies_flutter/chores/chore_view.dart';
+import 'package:chorebuddies_flutter/pages/create_edit_chore_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:chorebuddies_flutter/chores/models/chore_overview.dart';
@@ -45,10 +46,15 @@ class _ChoresPageState extends State<ChoresPage> {
                     choreOverview: chores[index],
                     onCheckBoxChanged: (value) => setState(() {
                       if (value != null && value) {
-                        choreService.markChoreAsDone(chores[index]);
+                        choreService.markChoreAsDone(chores[index].id);
                       }
                     }),
-                    onTileTap: () => {}, //TODO: Change to navigate to chore page when done
+                    onTileTap: () => {Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => CreateChorePage(id: chores[index].id),
+                                                ),
+                                              )},
                   );
                 },
               );
