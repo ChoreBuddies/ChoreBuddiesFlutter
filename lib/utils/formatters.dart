@@ -1,4 +1,4 @@
-import 'package:chorebuddies_flutter/notifications/models/notificaiton_event.dart';
+import 'package:chorebuddies_flutter/features/notifications/models/notificaiton_event.dart';
 
 String formatDate(DateTime? date) {
   if (date == null) return '';

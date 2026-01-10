@@ -1,16 +1,16 @@
 import 'dart:async';
 
-import 'package:chorebuddies_flutter/authentication/auth_manager.dart';
+import 'package:chorebuddies_flutter/features/authentication/auth_manager.dart';
 import 'package:chorebuddies_flutter/dependencies.dart';
 import 'package:chorebuddies_flutter/firebase_options.dart';
-import 'package:chorebuddies_flutter/households/household_service.dart';
-import 'package:chorebuddies_flutter/layout/main_layout.dart';
-import 'package:chorebuddies_flutter/notifications/notification_service.dart';
-import 'package:chorebuddies_flutter/pages/login_page.dart';
-import 'package:chorebuddies_flutter/pages/no_household_page.dart';
-import 'package:chorebuddies_flutter/pages/page_not_found.dart';
-import 'package:chorebuddies_flutter/styles/colors.dart';
-import 'package:chorebuddies_flutter/users/user_service.dart';
+import 'package:chorebuddies_flutter/features/households/household_service.dart';
+import 'package:chorebuddies_flutter/UI/layout/main_layout.dart';
+import 'package:chorebuddies_flutter/features/notifications/notification_service.dart';
+import 'package:chorebuddies_flutter/features/authentication/login_page.dart';
+import 'package:chorebuddies_flutter/features/households/no_household_page.dart';
+import 'package:chorebuddies_flutter/UI/pages/page_not_found.dart';
+import 'package:chorebuddies_flutter/UI/styles/colors.dart';
+import 'package:chorebuddies_flutter/features/users/user_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +18,6 @@ import 'package:provider/provider.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // Jeśli korzystasz z flutter_dotenv w tle, też musisz go załadować,
-  // ale zazwyczaj wystarczy sama inicjalizacja Firebase:
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   print("Obsługa w tle: ${message.messageId}");
 }
