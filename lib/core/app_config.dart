@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart'; // Potrzebne do kIsWeb
 
 class AppConfig {
@@ -10,7 +11,7 @@ class AppConfig {
   static const String _port = "5000";
   static const String _apiPath = "/api/v1";
 
-  static String get _host {
+  static Future<String> get _host async {
     if (_manualIp != null) {
       return _manualIp!;
     }
@@ -22,14 +23,24 @@ class AppConfig {
 
     // Android Emulator
     if (Platform.isAndroid) {
-      return "10.0.2.2";
+      final deviceInfo = DeviceInfoPlugin();
+      final androidInfo = await deviceInfo.androidInfo;
+
+      final isEmulator = androidInfo.isPhysicalDevice == false;
+
+      if (isEmulator) {
+        return "10.0.2.2"; // Android emulator
+      } else {
+        return "localhost"; // Physical device
+      }
     }
 
     // Default: iOS Simulator / Desktop
     return "localhost";
   }
 
-  static String get apiBaseUrl {
-    return "http://$_host:$_port$_apiPath";
+  static Future<String> get apiBaseUrl async {
+    final host = await _host;
+    return "http://$host:$_port$_apiPath";
   }
 }

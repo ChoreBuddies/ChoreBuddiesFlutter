@@ -11,8 +11,8 @@ import 'package:chorebuddies_flutter/core/app_config.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-Widget buildDependencies({required Widget child}) {
-  final baseUrl = AppConfig.apiBaseUrl;
+Future<Widget> buildDependencies({required Widget child}) async {
+  final baseUrl = await AppConfig.apiBaseUrl;
   debugPrint("App configured with Base URL: $baseUrl");
 
   return MultiProvider(
