@@ -16,12 +16,15 @@ class _ChatPageState extends State<ChatPage> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   bool _isInit = false;
+  bool _isLoadingMore = false;
   int? _householdId;
+  DateTime? _lastTypingTime;
 
   @override
   void initState() {
     super.initState();
     _initializeChat();
+    _scrollController.addListener(_onScroll);
   }
 
   Future<void> _initializeChat() async {
@@ -35,14 +38,41 @@ class _ChatPageState extends State<ChatPage> {
         if (!mounted) return;
 
         final chatService = context.read<ChatService>();
-        // 2. Załaduj historię i połącz się
-        await chatService.loadHistory(_householdId!);
+
+        await chatService.loadHistory();
         await chatService.connect(_householdId!);
       }
     } catch (e) {
       debugPrint("Error initializing chat: $e");
     } finally {
       if (mounted) setState(() => _isInit = true);
+    }
+  }
+
+  void _onScroll() {
+    if (_scrollController.hasClients) {
+      final maxScroll = _scrollController.position.maxScrollExtent;
+      final currentScroll = _scrollController.offset;
+
+      // If 100px from top and not loading more now
+      if (currentScroll >= (maxScroll - 100) && !_isLoadingMore) {
+        _loadMoreMessages();
+      }
+    }
+  }
+
+  Future<void> _loadMoreMessages() async {
+    final chatService = context.read<ChatService>();
+    if (chatService.messages.isEmpty) return;
+
+    setState(() => _isLoadingMore = true);
+
+    final oldestMessageDate = chatService.messages.first.sentAt;
+
+    await chatService.loadHistory(before: oldestMessageDate);
+
+    if (mounted) {
+      setState(() => _isLoadingMore = false);
     }
   }
 
@@ -57,9 +87,7 @@ class _ChatPageState extends State<ChatPage> {
   void dispose() {
     _controller.dispose();
     _scrollController.dispose();
-    // Opcjonalnie: rozłącz przy wyjściu z ekranu,
-    // ale jeśli chcesz powiadomienia w tle/na innych ekranach, zostaw połączenie.
-    // context.read<ChatService>().disconnect();
+
     super.dispose();
   }
 
@@ -87,14 +115,20 @@ class _ChatPageState extends State<ChatPage> {
           Expanded(
             child: Consumer<ChatService>(
               builder: (context, chatService, child) {
-                // Odwracamy listę, bo ListView ma reverse: true
                 final messages = chatService.messages.reversed.toList();
 
                 return ListView.builder(
                   controller: _scrollController,
-                  reverse: true, // Kluczowe dla czatu
-                  itemCount: messages.length,
+                  reverse: true,
+                  itemCount: messages.length + (_isLoadingMore ? 1 : 0),
                   itemBuilder: (context, index) {
+                    if (index >= messages.length) {
+                      return const Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    }
+
                     return MessageBubble(message: messages[index]);
                   },
                 );
@@ -138,7 +172,16 @@ class _ChatPageState extends State<ChatPage> {
                       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     ),
                     onChanged: (text) {
-                      // Tu można dodać wysyłanie sygnału "Typing..."
+                      if (_householdId != null && text.trim().isNotEmpty) {
+                        final now = DateTime.now();
+
+                        if (_lastTypingTime == null ||
+                            now.difference(_lastTypingTime!) > const Duration(seconds: 2)) {
+
+                          _lastTypingTime = now;
+                          context.read<ChatService>().sendTyping(_householdId!);
+                        }
+                      }
                     },
                     onSubmitted: (_) => _sendMessage(),
                   ),
