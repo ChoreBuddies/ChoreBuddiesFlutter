@@ -26,20 +26,37 @@ class ChatService extends ChangeNotifier {
     required AuthManager authManager
   }) : _authClient = authClient, _authManager = authManager;
 
-  Future<void> loadHistory(int householdId) async {
+  Future<int> loadHistory({DateTime? before}) async {
     try {
-      final response = await _authClient.get(_authClient.uri(_apiEndpoint));
+      final queryParams = <String, String>{};
+
+      if (before != null) {
+        queryParams['before'] = before.toIso8601String();
+      }
+
+      final uri = _authClient.uri(_apiEndpoint).replace(queryParameters: queryParams);
+      final response = await _authClient.get(uri);
 
       if (response.statusCode == 200) {
         final List<dynamic> jsonList = jsonDecode(response.body);
         final dtos = jsonList.map((j) => ChatMessageDto.fromJson(j)).toList();
+        final newVms = dtos.map((dto) => ChatMessageVm.fromDto(dto)).toList();
 
-        _messages = dtos.map((dto) => ChatMessageVm.fromDto(dto)).toList();
+        if (before == null) {
+          // Initial load
+          _messages = newVms;
+        } else {
+          // History load
+          _messages.insertAll(0, newVms);
+        }
+
         notifyListeners();
+        return newVms.length;
       }
     } catch (e) {
       debugPrint('Error loading chat history: $e');
     }
+    return 0;
   }
 
   Future<void> connect(int householdId) async {
@@ -52,10 +69,6 @@ class ChatService extends ChangeNotifier {
     }
 
     hubUrl = '$hubUrl/chatHub';
-
-    // if (Platform.isAndroid && hubUrl.contains('localhost')) {
-    //   hubUrl = hubUrl.replaceAll('localhost', '10.0.2.2');
-    // }
 
     debugPrint('Connecting to SignalR: $hubUrl');
 
@@ -139,6 +152,16 @@ class ChatService extends ChangeNotifier {
       debugPrint('Error sending message: $e');
       _messages.remove(localMsg);
       notifyListeners();
+    }
+  }
+
+  Future<void> sendTyping(int householdId) async {
+    if (!isConnected) return;
+
+    try {
+      await _hubConnection!.invoke('SendTyping', args: [householdId]);
+    } catch (e) {
+      debugPrint('Error sending typing: $e');
     }
   }
 
