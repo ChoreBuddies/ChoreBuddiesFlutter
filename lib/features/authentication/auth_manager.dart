@@ -34,7 +34,6 @@ class AuthManager extends ChangeNotifier {
         authenticationResultDto.refreshToken,
       );
 
-      notifyListeners();
       return true;
     } catch (e) {
       debugPrint('Login failed: $e');
@@ -59,7 +58,8 @@ class AuthManager extends ChangeNotifier {
         lastName,
         dateOfBirth,
       );
-      return success;
+      await storeTokens(success.accessToken, success.refreshToken);
+      return true;
     } catch (e) {
       debugPrint('Register failed: $e');
       return false;
@@ -79,6 +79,7 @@ class AuthManager extends ChangeNotifier {
     await _storage.write(key: 'auth_token', value: _token);
     _refreshToken = refreshToken;
     await _storage.write(key: 'refresh_token', value: _refreshToken);
+    notifyListeners();
   }
 
   Future<bool> refreshTokens() async {
