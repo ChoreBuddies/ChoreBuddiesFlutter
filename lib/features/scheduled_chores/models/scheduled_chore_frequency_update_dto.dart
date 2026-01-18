@@ -1,6 +1,8 @@
 import 'package:chorebuddies_flutter/features/scheduled_chores/models/scheduled_chores_tile_view_dto.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+part 'scheduled_chore_frequency_update_dto.g.dart';
+
 @JsonSerializable()
 class ScheduledChoreFrequencyUpdateDto {
   int id;
