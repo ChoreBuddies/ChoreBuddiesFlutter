@@ -21,9 +21,9 @@ Map<String, dynamic> _$ScheduledChoreFrequencyUpdateDtoToJson(
 };
 
 const _$FrequencyEnumMap = {
-  Frequency.daily: 'daily',
-  Frequency.weekly: 'weekly',
-  Frequency.monthly: 'monthly',
-  Frequency.quarterly: 'quarterly',
-  Frequency.yearly: 'yearly',
+  Frequency.daily: 0,
+  Frequency.weekly: 1,
+  Frequency.monthly: 2,
+  Frequency.quarterly: 3,
+  Frequency.yearly: 4,
 };

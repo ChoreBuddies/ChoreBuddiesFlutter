@@ -2,7 +2,18 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'scheduled_chores_tile_view_dto.g.dart';
 
-enum Frequency { daily, weekly, monthly, quarterly, yearly }
+enum Frequency {
+  @JsonValue(0)
+  daily,
+  @JsonValue(1)
+  weekly,
+  @JsonValue(2)
+  monthly,
+  @JsonValue(3)
+  quarterly,
+  @JsonValue(4)
+  yearly,
+}
 
 @JsonSerializable()
 class ScheduledChoreTileViewDto {
