@@ -58,7 +58,7 @@ Future<Widget> buildDependencies({required Widget child}) async {
       Provider<NotificationService>(create: (ctx) => NotificationService()),
       Provider<ScheduledChoresService>(
         create: (ctx) =>
-            ScheduledChoresService(authClient: ctx.read<AuthClient>()),
+            ScheduledChoresService(httpClient: ctx.read<AuthClient>()),
       ),
       ChangeNotifierProvider<ChatService>(
         create: (ctx) => ChatService(

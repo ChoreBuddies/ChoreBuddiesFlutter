@@ -24,27 +24,30 @@ class UserService {
     }
   }
 
-  Future<List<UserMinimalDto>> getUsersFromHousehold() async {
-      try {
-        final response = await _httpClient.get(_httpClient.uri('$endpoint/household'));
-        final List<dynamic> usersJson = jsonDecode(response.body);
+  Future<List<UserMinimalDto>> getMyHouseholdMembersAsync() async {
+    try {
+      final response = await _httpClient.get(
+        _httpClient.uri('$endpoint/household'),
+      );
+      final List<dynamic> usersJson = jsonDecode(response.body);
 
-        return usersJson
-            .map((json) => UserMinimalDto.fromJson(json as Map<String, dynamic>))
-            .toList();
-      } catch (e) {
+      return usersJson
+          .map((json) => UserMinimalDto.fromJson(json as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
       throw Exception('Error fetching users from household: $e');
     }
   }
-    Future<List<UserRole>> getUsersRolesFromHousehold() async {
-      try {
-        final response = await _httpClient.get(_httpClient.uri('$endpoint/household?role=true'));
-        final List<dynamic> usersJson = jsonDecode(response.body);
 
-          return usersJson
-            .map((json) => UserRole.fromJson(json as Map<String, dynamic>))
-            .toList();
-      } catch (e) {
+  Future<List<UserRole>> getUsersRolesFromHousehold() async {
+    try {
+      final response = await _httpClient.get(_httpClient.uri('$endpoint/household?role=true'));
+      final List<dynamic> usersJson = jsonDecode(response.body);
+
+        return usersJson
+          .map((json) => UserRole.fromJson(json as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
       throw Exception('Error fetching users with roles from household: $e');
     }
   }

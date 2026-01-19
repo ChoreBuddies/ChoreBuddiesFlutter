@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:chorebuddies_flutter/core/http_client_extensions.dart';
-import 'package:chorebuddies_flutter/features/authentication/auth_client.dart';
 import 'package:chorebuddies_flutter/features/households/models/household.dart';
 import 'package:chorebuddies_flutter/features/households/models/join_household_dto.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +13,8 @@ class HouseholdService extends ChangeNotifier {
 
     Future<Household> getHousehold(int? id) async {
     try {
-      final response = await _authClient.get(
-        _authClient.uri('$_endpoint/?id=$id'),
+      final response = await _httpClient.get(
+        _httpClient.uri('$_endpoint/?id=$id'),
       );
       final dynamic json = jsonDecode(response.body);
       return Household.fromJson(json as Map<String, dynamic>);
