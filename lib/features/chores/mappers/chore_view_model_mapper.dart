@@ -14,7 +14,6 @@ extension ChoreViewModelMapper on ChoreViewModel {
       room: room,
       rewardPointsCount: rewardPointsCount,
       frequency: frequency,
-      minAge: null,
       choreDuration: choreDuration,
       everyX: everyX,
     );
@@ -58,7 +57,6 @@ extension ChoreViewModelMapper on ChoreViewModel {
       everyX: everyX,
       lastGenerated: null,
       householdId: householdId,
-      minAge: 0,
     );
   }
 

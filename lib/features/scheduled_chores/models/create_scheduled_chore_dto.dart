@@ -11,7 +11,6 @@ class CreateScheduledChoreDto {
   String room;
   int rewardPointsCount;
   Frequency frequency;
-  int? minAge;
   int choreDuration;
   int everyX;
 
@@ -22,7 +21,6 @@ class CreateScheduledChoreDto {
     required this.room,
     required this.rewardPointsCount,
     required this.frequency,
-    this.minAge,
     required this.choreDuration,
     required this.everyX,
   });

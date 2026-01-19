@@ -9,7 +9,6 @@ part of 'scheduled_chore_dto.dart';
 ScheduledChoreDto _$ScheduledChoreDtoFromJson(Map<String, dynamic> json) =>
     ScheduledChoreDto(
       id: (json['id'] as num).toInt(),
-      minAge: (json['minAge'] as num).toInt(),
       name: json['name'] as String,
       description: json['description'] as String,
       userId: (json['userId'] as num?)?.toInt(),
@@ -27,7 +26,6 @@ ScheduledChoreDto _$ScheduledChoreDtoFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$ScheduledChoreDtoToJson(ScheduledChoreDto instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'minAge': instance.minAge,
       'name': instance.name,
       'description': instance.description,
       'userId': instance.userId,
