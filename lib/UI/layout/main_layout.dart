@@ -2,6 +2,7 @@ import 'package:chorebuddies_flutter/features/chores/chores_page.dart';
 import 'package:chorebuddies_flutter/UI/pages/page_not_found.dart';
 import 'package:chorebuddies_flutter/features/chat/chat_page.dart';
 import 'package:chorebuddies_flutter/UI/pages/settings_page.dart';
+import 'package:chorebuddies_flutter/features/households/household_management_page.dart';
 import 'package:chorebuddies_flutter/utils/firebase_utils.dart';
 import 'package:flutter/material.dart';
 import '../pages/home_page.dart';
@@ -44,6 +45,7 @@ class MainLayoutState extends State<MainLayout> {
     ChoresPage(),
     PageNotFound(),
     ChatPage(),
+    HouseholdManagementPage(),
     SettingsPage(),
   ];
 
@@ -60,15 +62,19 @@ class MainLayoutState extends State<MainLayout> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        showUnselectedLabels: true,
+        showUnselectedLabels: false,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Chores'),
+          BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: 'Home'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.cleaning_services),
+            label: 'Chores',
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.emoji_events),
             label: 'Rewards',
           ),
           BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Household'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
