@@ -1,17 +1,18 @@
 import 'dart:convert';
 
-import 'package:chorebuddies_flutter/features/authentication/auth_client.dart';
+import 'package:chorebuddies_flutter/core/http_client_extensions.dart';
 import 'package:chorebuddies_flutter/features/notifications/models/notification_preferences_dto.dart';
+import 'package:http/http.dart' as http;
 
 class NotificationPreferencesService {
-  final AuthClient _authClient;
+  final http.Client _httpClient;
   final String _endpoint = '/notifications/preferences';
-  NotificationPreferencesService({required AuthClient authClient})
-    : _authClient = authClient;
+  NotificationPreferencesService({required http.Client httpClient})
+    : _httpClient = httpClient;
 
   Future<List<NotificationPreferencesDto>> getPreferences() async {
     try {
-      final response = await _authClient.get(_authClient.uri('$_endpoint/me'));
+      final response = await _httpClient.get(_httpClient.uri('$_endpoint/me'));
       final List<dynamic> jsonList = jsonDecode(response.body) as List<dynamic>;
 
       final List<NotificationPreferencesDto> preferences = jsonList
@@ -29,8 +30,8 @@ class NotificationPreferencesService {
 
   Future<bool> updatePreferences(NotificationPreferencesDto pref) async {
     try {
-      final response = await _authClient.put(
-        _authClient.uri(_endpoint),
+      final response = await _httpClient.put(
+        _httpClient.uri(_endpoint),
         body: jsonEncode(pref.toJson()),
       );
       final bool success =

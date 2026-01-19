@@ -11,6 +11,14 @@ class AppConfig {
   static const String _port = "5000";
   static const String _apiPath = "/api/v1";
 
+  static String _baseUrl = "";
+  static String get baseUrl => _baseUrl;
+
+  static Future<void> init() async {
+    final host = await _host;
+    _baseUrl = "http://$host:$_port$_apiPath";
+  }
+
   static Future<String> get _host async {
     if (_manualIp != null) {
       return _manualIp!;
@@ -40,7 +48,7 @@ class AppConfig {
   }
 
   static Future<String> get apiBaseUrl async {
-    final host = await _host;
-    return "http://$host:$_port$_apiPath";
+    if (_baseUrl.isEmpty) await init();
+    return _baseUrl;
   }
 }

@@ -64,15 +64,10 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () async {
-                  var success = await authManager.login(
+                  await authManager.login(
                     _emailController.text.trim(),
                     _passwordController.text.trim(),
                   );
-                  if (!success) {
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(SnackBar(content: Text('Login failed')));
-                  }
                 },
                 child: const Text('Login'),
               ),

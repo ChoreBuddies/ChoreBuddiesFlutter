@@ -1,14 +1,16 @@
 import 'dart:convert';
+import 'package:chorebuddies_flutter/core/app_config.dart';
+import 'package:chorebuddies_flutter/core/http_client_extensions.dart';
 import 'package:chorebuddies_flutter/features/authentication/auth_manager.dart';
-import 'package:chorebuddies_flutter/features/authentication/auth_client.dart';
 import 'package:chorebuddies_flutter/features/chat/models/chat_message_dto.dart';
 import 'package:chorebuddies_flutter/features/chat/models/chat_message_vm.dart';
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 import 'package:signalr_core/signalr_core.dart';
 import 'package:uuid/uuid.dart';
 
 class ChatService extends ChangeNotifier {
-  final AuthClient _authClient;
+  final http.Client _httpClient;
   final AuthManager _authManager;
   final String _apiEndpoint = '/chat';
 
@@ -22,9 +24,9 @@ class ChatService extends ChangeNotifier {
   bool get isConnected => _hubConnection?.state == HubConnectionState.connected;
 
   ChatService({
-    required AuthClient authClient,
+    required http.Client httpClient,
     required AuthManager authManager
-  }) : _authClient = authClient, _authManager = authManager;
+  }) : _httpClient = httpClient, _authManager = authManager;
 
   Future<int> loadHistory({DateTime? before}) async {
     try {
@@ -34,8 +36,8 @@ class ChatService extends ChangeNotifier {
         queryParams['before'] = before.toIso8601String();
       }
 
-      final uri = _authClient.uri(_apiEndpoint).replace(queryParameters: queryParams);
-      final response = await _authClient.get(uri);
+      final uri = _httpClient.uri(_apiEndpoint).replace(queryParameters: queryParams);
+      final response = await _httpClient.get(uri);
 
       if (response.statusCode == 200) {
         final List<dynamic> jsonList = jsonDecode(response.body);
@@ -62,7 +64,7 @@ class ChatService extends ChangeNotifier {
   Future<void> connect(int householdId) async {
     if (isConnected) return;
 
-    String hubUrl = _authClient.baseUrl;
+    String hubUrl = await AppConfig.apiBaseUrl;
 
     if (hubUrl.endsWith('/api/v1')) {
       hubUrl = hubUrl.substring(0, hubUrl.length - 7);
