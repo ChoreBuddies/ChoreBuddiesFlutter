@@ -5,6 +5,8 @@ import 'package:chorebuddies_flutter/features/chores/chore_service.dart';
 import 'package:chorebuddies_flutter/features/households/household_service.dart';
 import 'package:chorebuddies_flutter/features/notifications/notification_preferences_service.dart';
 import 'package:chorebuddies_flutter/features/notifications/notification_service.dart';
+import 'package:chorebuddies_flutter/features/scheduled_chores/models/scheduled_chore_dto.dart';
+import 'package:chorebuddies_flutter/features/scheduled_chores/scheduled_chores_service.dart';
 import 'package:chorebuddies_flutter/features/users/user_service.dart';
 import 'package:chorebuddies_flutter/features/chat/chat_service.dart';
 import 'package:chorebuddies_flutter/core/app_config.dart';
@@ -42,6 +44,10 @@ Future<Widget> buildDependencies({required Widget child}) async {
             NotificationPreferencesService(authClient: ctx.read<AuthClient>()),
       ),
       Provider<NotificationService>(create: (ctx) => NotificationService()),
+      Provider<ScheduledChoresService>(
+        create: (ctx) =>
+            ScheduledChoresService(authClient: ctx.read<AuthClient>()),
+      ),
       ChangeNotifierProvider<ChatService>(
         create: (ctx) => ChatService(
           authClient: ctx.read<AuthClient>(),

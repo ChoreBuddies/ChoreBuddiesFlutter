@@ -1,6 +1,7 @@
 import 'package:chorebuddies_flutter/features/chores/chore_service.dart';
 import 'package:chorebuddies_flutter/features/chores/chore_view.dart';
-import 'package:chorebuddies_flutter/features/chores/create_edit_chore_page.dart';
+import 'package:chorebuddies_flutter/features/chores/create_edit_page/create_edit_chore_form.dart';
+import 'package:chorebuddies_flutter/features/chores/create_edit_page/create_edit_chore_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:chorebuddies_flutter/features/chores/models/chore_overview.dart';
@@ -26,7 +27,7 @@ class _ChoresPageState extends State<ChoresPage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CreateChorePage()),
+            MaterialPageRoute(builder: (context) => CreateEditChorePage()),
           ).then((_) => setState(() {}));
         },
         label: const Text('Add new Chore'),
@@ -65,7 +66,7 @@ class _ChoresPageState extends State<ChoresPage> {
                     context,
                     MaterialPageRoute(
                       builder: (context) =>
-                          CreateChorePage(id: chores[index].id),
+                          CreateEditChorePage(choreId: chores[index].id),
                     ),
                   ).then((_) => setState(() {})),
                 );

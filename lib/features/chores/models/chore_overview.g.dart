@@ -11,7 +11,7 @@ ChoreOverview _$ChoreOverviewFromJson(Map<String, dynamic> json) =>
       (json['id'] as num).toInt(),
       json['name'] as String,
       (json['assignedTo'] as num?)?.toInt(),
-      $enumDecode(_$StatusEnumMap, json['status']),
+      $enumDecodeNullable(_$StatusEnumMap, json['status']) ?? Status.unassigned,
       json['room'] as String,
       DateTime.parse(json['dueDate'] as String),
     );

@@ -34,7 +34,7 @@ class AuthApiService {
     }
   }
 
-  Future<bool> register(
+  Future<AuthenticationResultDto> register(
     String email,
     String password,
     String userName,
@@ -58,7 +58,8 @@ class AuthApiService {
         body: jsonEncode(request.toJson()),
       );
 
-      return response.statusCode == 200 || response.statusCode == 201;
+      final Map<String, dynamic> json = jsonDecode(response.body);
+      return AuthenticationResultDto.fromJson(json);
     } catch (e) {
       throw Exception('Registration failed: $e');
     }
