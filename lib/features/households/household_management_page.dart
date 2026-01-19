@@ -44,14 +44,13 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
       final userService = context.read<UserService>();
 
       final results = await Future.wait([
-        //householdService.getHouseholdDetails(),
-        //userService.getUsersInHousehold(householdId),      
-        // rewardsService.getPendings(householdId),        // TODO: odkomentować
-        Future.value(<RedeemedRewardUsername>[]),          // Placeholder dla nagród
+        householdService.getHousehold(null),
+        userService.getUsersRolesFromHousehold(),      
+        // rewardsService.getPendingRewards(householdId),        // TODO: add getPedingRewards
+        Future.value(<RedeemedRewardUsername>[]),          // Placeholder for rewards
       ]);
 
       if (!mounted) return;
-
       setState(() {
         _household = results[0] as Household;
         _users = results[1] as List<UserRole>;
@@ -69,13 +68,26 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
 
   @override
   Widget build(BuildContext context) {
-    final householdService = context.read<HouseholdService>();
-    final userService = context.read<UserService>();
-    //final redeemedRewardsService = context.read<RedeemedRewardsService>();
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
-    Household household = Household(1, 'Cool house', 'yeaaah');
-    List<UserRole> users = [UserRole(2, 'me', 'Adult')];
-    List<RedeemedRewardUsername> redeemedRewards = List.empty(); // TODO
+    if (_errorMessage != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(_errorMessage!, textAlign: TextAlign.center),
+            const SizedBox(height: 10),
+            ElevatedButton(onPressed: _loadData, child: const Text('Spróbuj ponownie'))
+          ],
+        ),
+      );
+    }
+
+    if (_household == null) {
+      return const Center(child: Text('Nie znaleziono gospodarstwa.'));
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('Household Management'),
@@ -84,11 +96,11 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          _householdDetailsCard(household),
+          _householdDetailsCard(_household!),
           const SizedBox(height: 16),
-          _usersCard(users),
+          _usersCard(_users),
           const SizedBox(height: 16),
-          _rewardsCard(redeemedRewards),
+          _rewardsCard(_redeemedRewards),
         ],
       ),
     );
@@ -148,8 +160,27 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Members',
-                style: Theme.of(context).textTheme.titleMedium),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Text('Members',
+                    style: Theme.of(context).textTheme.titleMedium),
+                    ),
+                  IconButton(
+                  tooltip: 'Edit household',
+                  icon: const Icon(Icons.edit), // TODO: when editing, change it to a save button
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const Placeholder(), // TODO: Edit Roles Logic
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
             const Divider(),
             ...users.map(_userTile),
           ],
@@ -184,16 +215,6 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
               setState(() {
                 user.roleName = value;
               });
-            },
-          ),
-          IconButton(
-            tooltip: 'Save role',
-            icon: const Icon(Icons.check_circle_outline),
-            onPressed: () {
-              // TODO: save role to backend
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Role updated for ${user.userName}')),
-              );
             },
           ),
         ],

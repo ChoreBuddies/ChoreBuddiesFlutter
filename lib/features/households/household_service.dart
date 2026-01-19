@@ -10,6 +10,18 @@ class HouseholdService extends ChangeNotifier {
   final String _endpoint = '/household';
   HouseholdService({required AuthClient authClient}) : _authClient = authClient;
 
+    Future<Household> getHousehold(int? id) async {
+    try {
+      final response = await _authClient.get(
+        _authClient.uri('$_endpoint/?id=$id'),
+      );
+      final dynamic json = jsonDecode(response.body);
+      return Household.fromJson(json as Map<String, dynamic>);
+    } catch (e) {
+      throw Exception('Error getting household: $e');
+    }
+  }
+
   Future<Household> joinHousehold(String invitationCode) async {
     try {
       final response = await _authClient.put(
