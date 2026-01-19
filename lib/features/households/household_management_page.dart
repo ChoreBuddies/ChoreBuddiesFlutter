@@ -1,19 +1,16 @@
+import 'package:chorebuddies_flutter/features/households/household_service.dart';
 import 'package:chorebuddies_flutter/features/households/models/household.dart';
 import 'package:chorebuddies_flutter/features/redeemedrewards/models/redeemedreward_username.dart';
 
 import 'package:chorebuddies_flutter/features/users/models/user_role.dart';
+import 'package:chorebuddies_flutter/features/users/user_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HouseholdManagementPage extends StatefulWidget {
-  final Household household;
-  final List<UserRole> users;
-  final List<RedeemedRewardUsername> redeemedRewards;
 
   const HouseholdManagementPage({
-    super.key,
-    required this.household,
-    required this.users,
-    required this.redeemedRewards,
+    super.key
   });
 
   @override
@@ -22,10 +19,63 @@ class HouseholdManagementPage extends StatefulWidget {
 }
 
 class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
-  final List<String> availableRoles = ['Admin', 'Member', 'Child'];
+  final List<String> availableRoles = ['Adult', 'Child'];
+  Household? _household;
+  List<UserRole> _users = [];
+  List<RedeemedRewardUsername> _redeemedRewards = [];
+  bool _isLoading = true;
+  String? _errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadData();
+    });
+  }
+  Future<void> _loadData() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final householdService = context.read<HouseholdService>();
+      final userService = context.read<UserService>();
+
+      final results = await Future.wait([
+        //householdService.getHouseholdDetails(),
+        //userService.getUsersInHousehold(householdId),      
+        // rewardsService.getPendings(householdId),        // TODO: odkomentować
+        Future.value(<RedeemedRewardUsername>[]),          // Placeholder dla nagród
+      ]);
+
+      if (!mounted) return;
+
+      setState(() {
+        _household = results[0] as Household;
+        _users = results[1] as List<UserRole>;
+        _redeemedRewards = results[2] as List<RedeemedRewardUsername>;
+        _isLoading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _errorMessage = 'Wystąpił błąd podczas ładowania danych: $e';
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final householdService = context.read<HouseholdService>();
+    final userService = context.read<UserService>();
+    //final redeemedRewardsService = context.read<RedeemedRewardsService>();
+
+    Household household = Household(1, 'Cool house', 'yeaaah');
+    List<UserRole> users = [UserRole(2, 'me', 'Adult')];
+    List<RedeemedRewardUsername> redeemedRewards = List.empty(); // TODO
     return Scaffold(
       appBar: AppBar(
         title: const Text('Household Management'),
@@ -34,11 +84,11 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          _householdDetailsCard(),
+          _householdDetailsCard(household),
           const SizedBox(height: 16),
-          _usersCard(),
+          _usersCard(users),
           const SizedBox(height: 16),
-          _rewardsCard(),
+          _rewardsCard(redeemedRewards),
         ],
       ),
     );
@@ -46,7 +96,7 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
 
   // ------------------ Household Details ------------------
 
-  Widget _householdDetailsCard() {
+  Widget _householdDetailsCard(Household household) {
     return Card(
       elevation: 3,
       child: Padding(
@@ -59,12 +109,12 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.household.name,
+                    household.name,
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    widget.household.description,
+                    household.description,
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ],
@@ -90,7 +140,7 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
 
   // ------------------ Users ------------------
 
-  Widget _usersCard() {
+  Widget _usersCard(List<UserRole> users) {
     return Card(
       elevation: 3,
       child: Padding(
@@ -101,7 +151,7 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
             Text('Members',
                 style: Theme.of(context).textTheme.titleMedium),
             const Divider(),
-            ...widget.users.map(_userTile),
+            ...users.map(_userTile),
           ],
         ),
       ),
@@ -153,7 +203,7 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
 
   // ------------------ Rewards ------------------
 
-  Widget _rewardsCard() {
+  Widget _rewardsCard(List<RedeemedRewardUsername> redeemedRewards) {
     return Card(
       elevation: 3,
       child: Padding(
@@ -164,9 +214,9 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
             Text('Pending Rewards',
                 style: Theme.of(context).textTheme.titleMedium),
             const Divider(),
-            if (widget.redeemedRewards.isEmpty)
+            if (redeemedRewards.isEmpty)
               const Text('No rewards to approve'),
-            ...widget.redeemedRewards.map(_rewardTile),
+            ...redeemedRewards.map(_rewardTile),
           ],
         ),
       ),
