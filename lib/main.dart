@@ -42,7 +42,9 @@ class MyApp extends StatelessWidget {
       title: 'ChoreBuddies',
       scaffoldMessengerKey: rootScaffoldMessengerKey,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Theme.of(context).primaryColor,
+        ),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
           backgroundColor: Colors.white,
           selectedItemColor: Colors.blue,
