@@ -5,7 +5,13 @@ class ValidatorRule {
   const ValidatorRule(this.pattern, this.errorMessage);
 }
 
-enum ValidationType { email, password, invitationCode }
+enum ValidationType {
+  email,
+  password,
+  invitationCode,
+  positiveInteger,
+  nonNegativeInteger,
+}
 
 class Validators {
   static final Map<ValidationType, ValidatorRule> rules = {
@@ -20,6 +26,14 @@ class Validators {
     ValidationType.invitationCode: ValidatorRule(
       RegExp(r'^[\s\S]{6,}$'),
       'Code must be 6 characters',
+    ),
+    ValidationType.positiveInteger: ValidatorRule(
+      RegExp(r'^[1-9]\d*$'),
+      'Must be a number greater than 0',
+    ),
+    ValidationType.nonNegativeInteger: ValidatorRule(
+      RegExp(r'^(0|[1-9]\d*)$'),
+      'Must be a number greater than or equal to 0',
     ),
   };
 

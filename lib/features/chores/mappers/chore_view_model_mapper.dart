@@ -58,7 +58,7 @@ extension ChoreViewModelMapper on ChoreViewModel {
       everyX: everyX,
       lastGenerated: null,
       householdId: householdId,
-      minAge: -1,
+      minAge: 0,
     );
   }
 

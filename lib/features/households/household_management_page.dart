@@ -1,6 +1,7 @@
 import 'package:chorebuddies_flutter/features/households/household_service.dart';
 import 'package:chorebuddies_flutter/features/households/models/household.dart';
 import 'package:chorebuddies_flutter/features/redeemedrewards/models/redeemedreward_username.dart';
+import 'package:chorebuddies_flutter/features/scheduled_chores/scheduled_chore_list.dart';
 
 import 'package:chorebuddies_flutter/features/users/models/user_role.dart';
 import 'package:chorebuddies_flutter/features/users/user_service.dart';
@@ -8,10 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class HouseholdManagementPage extends StatefulWidget {
-
-  const HouseholdManagementPage({
-    super.key
-  });
+  const HouseholdManagementPage({super.key});
 
   @override
   State<HouseholdManagementPage> createState() =>
@@ -33,6 +31,7 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
       _loadData();
     });
   }
+
   Future<void> _loadData() async {
     setState(() {
       _isLoading = true;
@@ -45,9 +44,9 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
 
       final results = await Future.wait([
         householdService.getHousehold(null),
-        userService.getUsersRolesFromHousehold(),      
+        userService.getUsersRolesFromHousehold(),
         // rewardsService.getPendingRewards(householdId),        // TODO: add getPedingRewards
-        Future.value(<RedeemedRewardUsername>[]),          // Placeholder for rewards
+        Future.value(<RedeemedRewardUsername>[]), // Placeholder for rewards
       ]);
 
       if (!mounted) return;
@@ -60,7 +59,7 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _errorMessage = 'Wystąpił błąd podczas ładowania danych: $e';
+        _errorMessage = 'Error occured: $e';
         _isLoading = false;
       });
     }
@@ -79,14 +78,17 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
           children: [
             Text(_errorMessage!, textAlign: TextAlign.center),
             const SizedBox(height: 10),
-            ElevatedButton(onPressed: _loadData, child: const Text('Spróbuj ponownie'))
+            ElevatedButton(
+              onPressed: _loadData,
+              child: const Text('Try again'),
+            ),
           ],
         ),
       );
     }
 
     if (_household == null) {
-      return const Center(child: Text('Nie znaleziono gospodarstwa.'));
+      return const Center(child: Text('Household not found.'));
     }
     return Scaffold(
       appBar: AppBar(
@@ -99,6 +101,8 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
           _householdDetailsCard(_household!),
           const SizedBox(height: 16),
           _usersCard(_users),
+          const SizedBox(height: 16),
+          ScheduledChoreList(),
           const SizedBox(height: 16),
           _rewardsCard(_redeemedRewards),
         ],
@@ -139,7 +143,8 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => const Placeholder(), // TODO: EditHouseholdPage
+                    builder: (_) =>
+                        const Placeholder(), // TODO: EditHouseholdPage
                   ),
                 );
               },
@@ -164,17 +169,22 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  child: Text('Members',
-                    style: Theme.of(context).textTheme.titleMedium),
-                    ),
-                  IconButton(
+                  child: Text(
+                    'Members',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ),
+                IconButton(
                   tooltip: 'Edit household',
-                  icon: const Icon(Icons.edit), // TODO: when editing, change it to a save button
+                  icon: const Icon(
+                    Icons.edit,
+                  ), // TODO: when editing, change it to a save button
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const Placeholder(), // TODO: Edit Roles Logic
+                        builder: (_) =>
+                            const Placeholder(), // TODO: Edit Roles Logic
                       ),
                     );
                   },
@@ -203,12 +213,7 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
           DropdownButton<String>(
             value: user.roleName,
             items: availableRoles
-                .map(
-                  (role) => DropdownMenuItem(
-                    value: role,
-                    child: Text(role),
-                  ),
-                )
+                .map((role) => DropdownMenuItem(value: role, child: Text(role)))
                 .toList(),
             onChanged: (value) {
               if (value == null) return;
@@ -232,11 +237,12 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Pending Rewards',
-                style: Theme.of(context).textTheme.titleMedium),
+            Text(
+              'Pending Rewards',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             const Divider(),
-            if (redeemedRewards.isEmpty)
-              const Text('No rewards to approve'),
+            if (redeemedRewards.isEmpty) const Text('No rewards to approve'),
             ...redeemedRewards.map(_rewardTile),
           ],
         ),
@@ -271,8 +277,9 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
               // TODO: approve reward logic
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content:
-                      Text('Reward approved for ${redeemedReward.userName}'),
+                  content: Text(
+                    'Reward approved for ${redeemedReward.userName}',
+                  ),
                 ),
               );
             },
