@@ -40,7 +40,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'ChoreBuddies',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Theme.of(context).primaryColor,
+        ),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
           backgroundColor: Colors.white,
           selectedItemColor: Colors.blue,
