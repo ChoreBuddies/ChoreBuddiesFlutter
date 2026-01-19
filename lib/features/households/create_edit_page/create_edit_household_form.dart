@@ -43,6 +43,7 @@ class _CreateEditHouseholdFormState extends State<CreateEditHouseholdForm> {
       widget.onValidSubmit?.call(model);
     }
     _isLoading = false;
+    if(mode == PageMode.create) return;
     setState(() => mode = PageMode.view);
     widget.onPageModeChanged?.call(mode);
   }

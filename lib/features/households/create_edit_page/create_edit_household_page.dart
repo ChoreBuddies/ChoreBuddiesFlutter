@@ -1,3 +1,4 @@
+import 'package:chorebuddies_flutter/UI/layout/main_layout.dart';
 import 'package:chorebuddies_flutter/UI/pages/home_page.dart';
 import 'package:chorebuddies_flutter/features/households/create_edit_page/create_edit_household_form.dart';
 import 'package:chorebuddies_flutter/features/households/household_service.dart';
@@ -54,24 +55,21 @@ class _CreateEditHouseholdPageState extends State<CreateEditHouseholdPage> {
     } else {
       result = await householdService.createHousehold(updatedModel);
     }
-
+    if(!mounted) return;
     if (result != null) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Saved successfully!')));
-      if (pageMode == PageMode.create && mounted) {
+      if (pageMode == PageMode.create) {
         Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-            builder: (context) =>
-                const HomePage(),
-          ),
-          (Route<dynamic> route) =>
-              false,
+          MaterialPageRoute(builder: (context) => const MainLayout()),
+          (Route<dynamic> route) => false,
         );
+      } else {
+        setState(() {
+          pageMode = PageMode.view;
+        });
       }
-      setState(() {
-        pageMode = PageMode.view;
-      });
     } else {
       ScaffoldMessenger.of(
         context,
