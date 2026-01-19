@@ -6,6 +6,7 @@ import 'package:chorebuddies_flutter/features/chores/models/status.dart';
 import 'package:chorebuddies_flutter/features/scheduled_chores/models/scheduled_chores_tile_view_dto.dart';
 import 'package:chorebuddies_flutter/features/scheduled_chores/scheduled_chore_form_fields.dart';
 import 'package:chorebuddies_flutter/features/users/models/user_minimal_dto.dart';
+import 'package:chorebuddies_flutter/utils/validators.dart';
 import 'package:flutter/material.dart';
 
 class CreateEditChoreForm extends StatefulWidget {
@@ -166,6 +167,14 @@ class _CreateEditChoreFormState extends State<CreateEditChoreForm> {
             controller: rewardPointsController,
             keyboardType: TextInputType.number,
             readonly: mode == PageMode.view,
+            validator: (value) {
+              if (_readOnly) return null;
+              if (value == null || value.isEmpty) return 'Required';
+              return Validators.validate(
+                value,
+                ValidationType.nonNegativeInteger,
+              );
+            },
           ),
 
           Row(
@@ -225,7 +234,7 @@ class _CreateEditChoreFormState extends State<CreateEditChoreForm> {
                 const SizedBox(height: 10),
                 Expanded(
                   child: OutlinedButton.icon(
-                    onPressed: () => setState(() => mode = PageMode.edit),
+                    onPressed: () => setState(() => _switchToEdit()),
                     icon: const Icon(Icons.edit),
                     label: const Text('Edit'),
                   ),

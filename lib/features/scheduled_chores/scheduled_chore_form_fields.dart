@@ -1,6 +1,7 @@
 import 'package:chorebuddies_flutter/features/chores/create_edit_page/create_edit_chore_page.dart';
 import 'package:chorebuddies_flutter/UI/widgets/g_form_field.dart';
 import 'package:chorebuddies_flutter/features/scheduled_chores/models/scheduled_chores_tile_view_dto.dart';
+import 'package:chorebuddies_flutter/utils/validators.dart';
 import 'package:flutter/material.dart';
 
 class ScheduledChoreFormFields extends StatelessWidget {
@@ -36,6 +37,11 @@ class ScheduledChoreFormFields extends StatelessWidget {
           controller: choreDurationController,
           keyboardType: TextInputType.number,
           readonly: _readOnly,
+          validator: (value) {
+            if (_readOnly) return null;
+            if (value == null || value.isEmpty) return 'Required';
+            return Validators.validate(value, ValidationType.positiveInteger);
+          },
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -58,6 +64,11 @@ class ScheduledChoreFormFields extends StatelessWidget {
           controller: everyXController,
           keyboardType: TextInputType.number,
           readonly: _readOnly,
+          validator: (value) {
+            if (_readOnly) return null;
+            if (value == null || value.isEmpty) return 'Required';
+            return Validators.validate(value, ValidationType.positiveInteger);
+          },
         ),
       ],
     );
