@@ -23,7 +23,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 final GlobalKey<MainLayoutState> mainLayoutKey = GlobalKey<MainLayoutState>();
-final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
+    GlobalKey<ScaffoldMessengerState>();
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,21 +52,21 @@ class MyApp extends StatelessWidget {
           unselectedItemColor: Colors.grey,
         ),
       ),
-      home: _HomePage(),
+      home: HomePage(),
       onUnknownRoute: (settings) =>
           MaterialPageRoute(builder: (context) => const PageNotFound()),
     );
   }
 }
 
-class _HomePage extends StatefulWidget {
-  const _HomePage();
+class HomePage extends StatefulWidget {
+  const HomePage();
 
   @override
-  State<_HomePage> createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<_HomePage> {
+class _HomePageState extends State<HomePage> {
   StreamSubscription? _messageSubscription;
   NotificationService? _notificationService;
 
@@ -143,36 +144,11 @@ class _HomePageState extends State<_HomePage> {
     }
 
     context.watch<HouseholdService>();
-    final userService = context.read<UserService>();
 
-    return FutureBuilder(
-      future: userService.getMe(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
-
-        if (snapshot.hasError) {
-          return Scaffold(
-            body: Center(child: Text('Error: ${snapshot.error}')),
-          );
-        }
-
-        final user = snapshot.data;
-        if (user == null) {
-          return const Scaffold(
-            body: Center(child: Text('Couldn\'t load user data')),
-          );
-        }
-
-        if (user.householdId != null) {
-          return MainLayout(key: mainLayoutKey);
-        } else {
-          return const NoHouseholdPage();
-        }
-      },
-    );
+    if (auth.hasHousehold) {
+      return MainLayout(key: mainLayoutKey);
+    } else {
+      return const NoHouseholdPage();
+    }
   }
 }

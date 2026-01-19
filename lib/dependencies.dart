@@ -25,7 +25,8 @@ Future<Widget> buildDependencies({required Widget child}) async {
       Provider<AuthApiService>(
         create: (ctx) => AuthApiService(
           baseUrl: baseUrl,
-          httpClient: ApiExceptionInterceptor(inner: http.Client()),), // Client with ApiExceptionInterceptor
+          httpClient: ApiExceptionInterceptor(inner: http.Client()),
+        ), // Client with ApiExceptionInterceptor
       ),
       ChangeNotifierProvider<AuthManager>(
         create: (ctx) =>
@@ -39,7 +40,9 @@ Future<Widget> buildDependencies({required Widget child}) async {
       Provider<http.Client>(
         create: (ctx) {
           final authClient = ctx.read<AuthClient>();
-          return ApiExceptionInterceptor(inner: authClient); // baseClient -> AuthClient -> Interceptor
+          return ApiExceptionInterceptor(
+            inner: authClient,
+          ); // baseClient -> AuthClient -> Interceptor
         },
       ),
       Provider(
@@ -49,7 +52,10 @@ Future<Widget> buildDependencies({required Widget child}) async {
         create: (ctx) => UserService(httpClient: ctx.read<http.Client>()),
       ),
       ChangeNotifierProvider<HouseholdService>(
-        create: (ctx) => HouseholdService(httpClient: ctx.read<http.Client>()),
+        create: (ctx) => HouseholdService(
+          httpClient: ctx.read<http.Client>(),
+          authManager: ctx.read<AuthManager>(),
+        ),
       ),
       Provider<NotificationPreferencesService>(
         create: (ctx) =>
