@@ -15,7 +15,6 @@ CreateScheduledChoreDto _$CreateScheduledChoreDtoFromJson(
   room: json['room'] as String,
   rewardPointsCount: (json['rewardPointsCount'] as num).toInt(),
   frequency: $enumDecode(_$FrequencyEnumMap, json['frequency']),
-  minAge: (json['minAge'] as num?)?.toInt(),
   choreDuration: (json['choreDuration'] as num).toInt(),
   everyX: (json['everyX'] as num).toInt(),
 );
@@ -29,7 +28,6 @@ Map<String, dynamic> _$CreateScheduledChoreDtoToJson(
   'room': instance.room,
   'rewardPointsCount': instance.rewardPointsCount,
   'frequency': _$FrequencyEnumMap[instance.frequency]!,
-  'minAge': instance.minAge,
   'choreDuration': instance.choreDuration,
   'everyX': instance.everyX,
 };
