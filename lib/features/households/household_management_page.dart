@@ -1,5 +1,6 @@
 import 'package:chorebuddies_flutter/features/households/create_edit_page/create_edit_household_page.dart';
 import 'package:chorebuddies_flutter/features/households/household_service.dart';
+import 'package:chorebuddies_flutter/features/households/invitation_code_display.dart';
 import 'package:chorebuddies_flutter/features/households/models/household.dart';
 import 'package:chorebuddies_flutter/features/redeemedrewards/models/redeemedreward_username.dart';
 import 'package:chorebuddies_flutter/features/scheduled_chores/scheduled_chore_list.dart';
@@ -99,6 +100,11 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          InvitationCodeDisplay(
+            householdName: _household!.name,
+            invitationCode: _household!.invitationCode,
+          ),
+          const SizedBox(height: 16),
           _householdDetailsCard(_household!),
           const SizedBox(height: 16),
           _usersCard(_users),

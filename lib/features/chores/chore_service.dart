@@ -1,18 +1,19 @@
 import 'dart:convert';
 
-import 'package:chorebuddies_flutter/features/authentication/auth_client.dart';
+import 'package:chorebuddies_flutter/core/http_client_extensions.dart';
 import 'package:chorebuddies_flutter/features/chores/models/chore_create.dart';
 import 'package:chorebuddies_flutter/features/chores/models/chore_dto.dart';
 import 'package:chorebuddies_flutter/features/chores/models/chore_overview.dart';
+import 'package:http/http.dart' as http;
 
 class ChoreService {
-  final AuthClient _authClient;
+  final http.Client _httpClient;
   final String endpoint = '/chores';
-  ChoreService({required AuthClient authClient}) : _authClient = authClient;
+  ChoreService({required http.Client httpClient}) : _httpClient = httpClient;
 
   Future<List<ChoreOverview>> getChores() async {
     try {
-      final response = await _authClient.get(_authClient.uri(endpoint));
+      final response = await _httpClient.get(_httpClient.uri(endpoint));
       final List<dynamic> jsonList = jsonDecode(response.body);
 
       return jsonList
@@ -24,7 +25,7 @@ class ChoreService {
   }
   Future<ChoreDto?> getChore(int id) async {
     try {
-      final response = await _authClient.get(_authClient.uri('$endpoint/$id'));
+      final response = await _httpClient.get(_httpClient.uri('$endpoint/$id'));
       final Map<String, dynamic> jsonChore = jsonDecode(response.body);
 
       return ChoreDto.fromJson(jsonChore);
@@ -34,7 +35,7 @@ class ChoreService {
   }
     Future<ChoreDto?> createChore(ChoreCreate chore) async {
     try {
-      final response = await _authClient.post(_authClient.uri('$endpoint/add'),  body: jsonEncode(chore));
+      final response = await _httpClient.post(_httpClient.uri('$endpoint/add'),  body: jsonEncode(chore));
       final Map<String, dynamic> jsonChore = jsonDecode(response.body);
 
       return ChoreDto.fromJson(jsonChore);
@@ -44,7 +45,7 @@ class ChoreService {
   }
     Future<ChoreDto?> updateChore(ChoreDto chore) async {
     try {
-      final response = await _authClient.post(_authClient.uri('$endpoint/update'),  body: jsonEncode(chore));
+      final response = await _httpClient.post(_httpClient.uri('$endpoint/update'),  body: jsonEncode(chore));
       final Map<String, dynamic> jsonChore = jsonDecode(response.body);
 
       return ChoreDto.fromJson(jsonChore);
@@ -54,7 +55,7 @@ class ChoreService {
   }
   Future<ChoreOverview> markChoreAsDone(int choreId) async {
     try {
-      final response = await _authClient.post(_authClient.uri('$endpoint/markAsDone?choreId=$choreId'));
+      final response = await _httpClient.post(_httpClient.uri('$endpoint/markAsDone?choreId=$choreId'));
       final Map<String, dynamic> jsonChore = jsonDecode(response.body);
 
       return ChoreOverview.fromJson(jsonChore);

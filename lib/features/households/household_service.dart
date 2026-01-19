@@ -1,21 +1,28 @@
 import 'dart:convert';
 
-import 'package:chorebuddies_flutter/features/authentication/auth_client.dart';
+import 'package:chorebuddies_flutter/core/http_client_extensions.dart';
+import 'package:chorebuddies_flutter/features/authentication/auth_manager.dart';
 import 'package:chorebuddies_flutter/features/authentication/models/authentication_result_dto.dart';
 import 'package:chorebuddies_flutter/features/households/models/create_household_dto.dart';
 import 'package:chorebuddies_flutter/features/households/models/household.dart';
 import 'package:chorebuddies_flutter/features/households/models/join_household_dto.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class HouseholdService extends ChangeNotifier {
-  final AuthClient _authClient;
+  final http.Client _httpClient;
+  final AuthManager _authManager;
   final String _endpoint = '/household';
-  HouseholdService({required AuthClient authClient}) : _authClient = authClient;
+  HouseholdService({
+    required http.Client httpClient,
+    required AuthManager authManager,
+  }) : _httpClient = httpClient,
+       _authManager = authManager;
 
-    Future<Household> getHousehold(int? id) async {
+  Future<Household> getHousehold(int? id) async {
     try {
-      final response = await _authClient.get(
-        _authClient.uri('$_endpoint/?id=$id'),
+      final response = await _httpClient.get(
+        _httpClient.uri('$_endpoint/?id=$id'),
       );
       final dynamic json = jsonDecode(response.body);
       return Household.fromJson(json as Map<String, dynamic>);
@@ -25,8 +32,8 @@ class HouseholdService extends ChangeNotifier {
   }
   Future<AuthenticationResultDto> createHousehold(Household household) async {
     try {
-      final response = await _authClient.post(
-        _authClient.uri('$_endpoint/add'),
+      final response = await _httpClient.post(
+        _httpClient.uri('$_endpoint/add'),
         body: jsonEncode(CreateHouseholdDto(household.name, household.description).toJson())
       );
       final dynamic json = jsonDecode(response.body);
@@ -38,8 +45,8 @@ class HouseholdService extends ChangeNotifier {
   Future<Household> updateHousehold(Household household) async {
     int id = household.id as int;
     try {
-      final response = await _authClient.put(
-        _authClient.uri('$_endpoint/update/$id'),
+      final response = await _httpClient.put(
+        _httpClient.uri('$_endpoint/update/$id'),
         body: jsonEncode(household.toJson())
       );
       final dynamic json = jsonDecode(response.body);
@@ -49,15 +56,17 @@ class HouseholdService extends ChangeNotifier {
     }
   }
 
-  Future<Household> joinHousehold(String invitationCode) async {
+  Future<String?> joinHousehold(String invitationCode) async {
     try {
-      final response = await _authClient.put(
-        _authClient.uri('$_endpoint/join'),
+      final response = await _httpClient.put(
+        _httpClient.uri('$_endpoint/join'),
         body: jsonEncode(JoinHouseholdDto(invitationCode).toJson()),
       );
       final dynamic json = jsonDecode(response.body);
+      final dto = AuthenticationResultDto.fromJson(json);
+      _authManager.storeTokens(dto.accessToken, dto.refreshToken);
       notifyListeners();
-      return Household.fromJson(json as Map<String, dynamic>);
+      return _authManager.householdId;
     } catch (e) {
       throw Exception('Error joining household: $e');
     }

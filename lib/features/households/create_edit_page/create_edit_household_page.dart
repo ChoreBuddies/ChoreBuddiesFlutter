@@ -39,7 +39,7 @@ class _CreateEditHouseholdPageState extends State<CreateEditHouseholdPage> {
       model = await householdService.getHousehold(widget.householdId!);
     } else {
       pageMode = PageMode.create;
-      model = Household(null, '', '');
+      model = Household(null, '', '', '');
     }
 
     setState(() {

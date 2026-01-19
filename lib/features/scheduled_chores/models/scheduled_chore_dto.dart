@@ -6,7 +6,6 @@ part 'scheduled_chore_dto.g.dart';
 @JsonSerializable()
 class ScheduledChoreDto {
   int id;
-  int minAge;
   String name;
   String description;
   int? userId;
@@ -20,7 +19,6 @@ class ScheduledChoreDto {
 
   ScheduledChoreDto({
     required this.id,
-    required this.minAge,
     required this.name,
     required this.description,
     this.userId,

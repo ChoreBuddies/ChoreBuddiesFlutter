@@ -1,22 +1,23 @@
 import 'dart:convert';
 
-import 'package:chorebuddies_flutter/features/authentication/auth_client.dart';
+import 'package:chorebuddies_flutter/core/http_client_extensions.dart';
 import 'package:chorebuddies_flutter/features/scheduled_chores/models/create_scheduled_chore_dto.dart';
 import 'package:chorebuddies_flutter/features/scheduled_chores/models/scheduled_chore_dto.dart';
 import 'package:chorebuddies_flutter/features/scheduled_chores/models/scheduled_chore_frequency_update_dto.dart';
 import 'package:chorebuddies_flutter/features/scheduled_chores/models/scheduled_chores_tile_view_dto.dart';
+import 'package:http/http.dart' as http;
 
 class ScheduledChoresService {
-  final AuthClient _authClient;
+  final http.Client _httpClient;
 
   final String _endpoint = '/scheduledChores';
 
-  ScheduledChoresService({required AuthClient authClient})
-    : _authClient = authClient;
+  ScheduledChoresService({required http.Client httpClient})
+    : _httpClient = httpClient;
 
   Future<ScheduledChoreDto?> getChoreById(int id) async {
     try {
-      final response = await _authClient.get(_authClient.uri('$_endpoint/$id'));
+      final response = await _httpClient.get(_httpClient.uri('$_endpoint/$id'));
 
       if (response.statusCode < 200 || response.statusCode >= 300) {
         return null;
@@ -33,8 +34,8 @@ class ScheduledChoresService {
 
   Future<List<ScheduledChoreDto>> getMyHouseholdChores() async {
     try {
-      final response = await _authClient.get(
-        _authClient.uri('$_endpoint/Household-chores'),
+      final response = await _httpClient.get(
+        _httpClient.uri('$_endpoint/Household-chores'),
       );
 
       if (response.statusCode < 200 || response.statusCode >= 300) {
@@ -53,8 +54,8 @@ class ScheduledChoresService {
 
   Future<List<ScheduledChoreTileViewDto>> getMyHouseholdChoresOverview() async {
     try {
-      final response = await _authClient.get(
-        _authClient.uri('$_endpoint/household-chores/overview'),
+      final response = await _httpClient.get(
+        _httpClient.uri('$_endpoint/household-chores/overview'),
       );
 
       if (response.statusCode < 200 || response.statusCode >= 300) {
@@ -76,8 +77,8 @@ class ScheduledChoresService {
 
   Future<ScheduledChoreDto?> updateChore(ScheduledChoreDto chore) async {
     try {
-      final response = await _authClient.post(
-        _authClient.uri('$_endpoint/update'),
+      final response = await _httpClient.post(
+        _httpClient.uri('$_endpoint/update'),
         body: jsonEncode(chore.toJson()),
       );
 
@@ -96,8 +97,8 @@ class ScheduledChoresService {
 
   Future<ScheduledChoreDto?> createChore(CreateScheduledChoreDto chore) async {
     try {
-      final response = await _authClient.post(
-        _authClient.uri('$_endpoint/add'),
+      final response = await _httpClient.post(
+        _httpClient.uri('$_endpoint/add'),
         body: jsonEncode(chore.toJson()),
       );
 
@@ -121,8 +122,8 @@ class ScheduledChoresService {
     try {
       final dto = ScheduledChoreFrequencyUpdateDto(choreId, frequency);
 
-      final response = await _authClient.put(
-        _authClient.uri('$_endpoint/frequency'),
+      final response = await _httpClient.put(
+        _httpClient.uri('$_endpoint/frequency'),
         body: jsonEncode(dto.toJson()),
       );
 
@@ -141,8 +142,8 @@ class ScheduledChoresService {
 
   Future<bool> deleteChore(int choreId) async {
     try {
-      final response = await _authClient.delete(
-        _authClient.uri('$_endpoint/$choreId'),
+      final response = await _httpClient.delete(
+        _httpClient.uri('$_endpoint/$choreId'),
       );
 
       return response.statusCode >= 200 && response.statusCode < 300;

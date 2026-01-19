@@ -2,6 +2,7 @@ import 'package:chorebuddies_flutter/UI/layout/main_layout.dart';
 import 'package:chorebuddies_flutter/features/authentication/auth_manager.dart';
 import 'package:chorebuddies_flutter/UI/widgets/g_form_field.dart';
 import 'package:chorebuddies_flutter/features/authentication/login_page.dart';
+import 'package:chorebuddies_flutter/main.dart';
 import 'package:chorebuddies_flutter/utils/formatters.dart';
 import 'package:chorebuddies_flutter/utils/validators.dart';
 import 'package:flutter/gestures.dart';
@@ -216,13 +217,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       if (success && mounted) {
                         Navigator.of(context).pushAndRemoveUntil(
                           MaterialPageRoute(
-                            builder: (context) => const MainLayout(),
+                            builder: (context) => const HomePage(),
                           ),
                           (route) => false,
-                        );
-                      } else if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Registration failed')),
                         );
                       }
                     }
