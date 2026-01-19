@@ -1,3 +1,4 @@
+import 'package:chorebuddies_flutter/UI/pages/home_page.dart';
 import 'package:chorebuddies_flutter/features/households/create_edit_page/create_edit_household_form.dart';
 import 'package:chorebuddies_flutter/features/households/household_service.dart';
 import 'package:chorebuddies_flutter/features/households/models/household.dart';
@@ -10,16 +11,12 @@ enum PageMode { create, view, edit }
 
 class CreateEditHouseholdPage extends StatefulWidget {
   final int? householdId;
-  final bool isScheduled;
 
-  const CreateEditHouseholdPage({
-    super.key,
-    this.householdId,
-    this.isScheduled = false,
-  });
+  const CreateEditHouseholdPage({super.key, this.householdId});
 
   @override
-  State<CreateEditHouseholdPage> createState() => _CreateEditHouseholdPageState();
+  State<CreateEditHouseholdPage> createState() =>
+      _CreateEditHouseholdPageState();
 }
 
 class _CreateEditHouseholdPageState extends State<CreateEditHouseholdPage> {
@@ -35,16 +32,13 @@ class _CreateEditHouseholdPageState extends State<CreateEditHouseholdPage> {
   }
 
   Future<void> _loadData() async {
-    var userService = context.read<UserService>();
     var householdService = context.read<HouseholdService>();
-    availableUsers = await userService.getMyHouseholdMembersAsync();
-
     if (widget.householdId != null) {
       pageMode = PageMode.view;
-        model = await householdService.getHousehold(widget.householdId!);
+      model = await householdService.getHousehold(widget.householdId!);
     } else {
       pageMode = PageMode.create;
-      model = Household(null, null, null);
+      model = Household(null, '', '');
     }
 
     setState(() {
@@ -52,22 +46,29 @@ class _CreateEditHouseholdPageState extends State<CreateEditHouseholdPage> {
     });
   }
 
-
   Future<void> _handleSave(Household updatedModel) async {
     var householdService = context.read<HouseholdService>();
     var result;
     if (pageMode == PageMode.edit) {
-      //result = await householdService.updateHousehold(updatedModel);
-    } 
-    else {
-      //result = await householdService.createHousehold(updatedModel);
+      result = await householdService.updateHousehold(updatedModel);
+    } else {
+      result = await householdService.createHousehold(updatedModel);
     }
 
     if (result != null) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Saved successfully!')));
-
+      if (pageMode == PageMode.create && mounted) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) =>
+                const HomePage(),
+          ),
+          (Route<dynamic> route) =>
+              false,
+        );
+      }
       setState(() {
         pageMode = PageMode.view;
       });

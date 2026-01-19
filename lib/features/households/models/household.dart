@@ -5,7 +5,7 @@ part 'household.g.dart';
 @JsonSerializable()
 class Household {
     int? id;
-    String? name;
+    String name = '';
     String? description;
   Household(this.id, this.name, this.description);
   factory Household.fromJson(Map<String, dynamic> json) =>

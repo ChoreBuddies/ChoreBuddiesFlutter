@@ -1,5 +1,6 @@
 import 'package:chorebuddies_flutter/UI/widgets/g_form_field.dart';
 import 'package:chorebuddies_flutter/UI/widgets/g_or_divider.dart';
+import 'package:chorebuddies_flutter/features/households/create_edit_page/create_edit_household_page.dart';
 import 'package:chorebuddies_flutter/features/households/household_service.dart';
 import 'package:chorebuddies_flutter/utils/validators.dart';
 import 'package:flutter/material.dart';
@@ -127,7 +128,15 @@ class _NoHouseholdPageState extends State<NoHouseholdPage> {
               SizedBox(
                 height: 48,
                 child: OutlinedButton.icon(
-                  onPressed: () {},
+                  onPressed: () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            CreateEditHouseholdPage(),
+                      ),
+                    )
+                  },
                   icon: const Icon(Icons.add_circle_outline),
                   label: const Text('Create New Household'),
                   style: OutlinedButton.styleFrom(

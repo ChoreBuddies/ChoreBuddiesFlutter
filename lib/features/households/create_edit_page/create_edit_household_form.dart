@@ -43,6 +43,8 @@ class _CreateEditHouseholdFormState extends State<CreateEditHouseholdForm> {
       widget.onValidSubmit?.call(model);
     }
     _isLoading = false;
+    setState(() => mode = PageMode.view);
+    widget.onPageModeChanged?.call(mode);
   }
 
   Future<void> _switchToEdit() async {
@@ -67,7 +69,6 @@ class _CreateEditHouseholdFormState extends State<CreateEditHouseholdForm> {
     super.dispose();
   }
 
-  bool get _readOnly => mode == PageMode.view;
   @override
   Widget build(BuildContext context) {
     return Form(
