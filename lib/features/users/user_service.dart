@@ -4,6 +4,7 @@ import 'package:chorebuddies_flutter/features/authentication/auth_client.dart';
 import 'package:chorebuddies_flutter/features/users/models/update_fcmtoken_dto.dart';
 import 'package:chorebuddies_flutter/features/users/models/update_user_dto.dart';
 import 'package:chorebuddies_flutter/features/users/models/user.dart';
+import 'package:chorebuddies_flutter/features/users/models/user_role.dart';
 import 'package:chorebuddies_flutter/features/users/models/user_minimal_dto.dart';
 
 class UserService {
@@ -34,6 +35,18 @@ class UserService {
           .toList();
     } catch (e) {
       throw Exception('Error fetching users from household: $e');
+    }
+  }
+    Future<List<UserRole>> getUsersRolesFromHousehold() async {
+      try {
+        final response = await _authClient.get(_authClient.uri('$endpoint/household?role=true'));
+        final List<dynamic> usersJson = jsonDecode(response.body);
+  
+          return usersJson
+            .map((json) => UserRole.fromJson(json as Map<String, dynamic>))
+            .toList();
+      } catch (e) {
+      throw Exception('Error fetching users with roles from household: $e');
     }
   }
 
