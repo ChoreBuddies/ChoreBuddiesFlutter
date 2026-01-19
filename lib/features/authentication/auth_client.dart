@@ -7,8 +7,6 @@ class AuthClient extends http.BaseClient {
   final AuthManager _authManager;
   final String baseUrl;
 
-  Uri uri(String path) => Uri.parse('$baseUrl$path');
-
   AuthClient({
     required this.baseUrl,
     required AuthManager authManager,

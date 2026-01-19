@@ -5,22 +5,27 @@ import 'package:chorebuddies_flutter/features/chores/chore_service.dart';
 import 'package:chorebuddies_flutter/features/households/household_service.dart';
 import 'package:chorebuddies_flutter/features/notifications/notification_preferences_service.dart';
 import 'package:chorebuddies_flutter/features/notifications/notification_service.dart';
-import 'package:chorebuddies_flutter/features/scheduled_chores/models/scheduled_chore_dto.dart';
 import 'package:chorebuddies_flutter/features/scheduled_chores/scheduled_chores_service.dart';
 import 'package:chorebuddies_flutter/features/users/user_service.dart';
 import 'package:chorebuddies_flutter/features/chat/chat_service.dart';
 import 'package:chorebuddies_flutter/core/app_config.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
+import 'features/exception_handler/api_exception_interceptor.dart';
+
 Future<Widget> buildDependencies({required Widget child}) async {
-  final baseUrl = await AppConfig.apiBaseUrl;
+  await AppConfig.init();
+  final baseUrl = AppConfig.baseUrl;
   debugPrint("App configured with Base URL: $baseUrl");
 
   return MultiProvider(
     providers: [
       Provider<AuthApiService>(
-        create: (ctx) => AuthApiService(baseUrl: baseUrl),
+        create: (ctx) => AuthApiService(
+          baseUrl: baseUrl,
+          httpClient: ApiExceptionInterceptor(inner: http.Client()),), // Client with ApiExceptionInterceptor
       ),
       ChangeNotifierProvider<AuthManager>(
         create: (ctx) =>
@@ -30,27 +35,34 @@ Future<Widget> buildDependencies({required Widget child}) async {
         create: (ctx) =>
             AuthClient(baseUrl: baseUrl, authManager: ctx.read<AuthManager>()),
       ),
-      Provider(
-        create: (ctx) => ChoreService(authClient: ctx.read<AuthClient>()),
+      // Main client - ApiExceptionInterceptor + AuthClient
+      Provider<http.Client>(
+        create: (ctx) {
+          final authClient = ctx.read<AuthClient>();
+          return ApiExceptionInterceptor(inner: authClient); // baseClient -> AuthClient -> Interceptor
+        },
       ),
       Provider(
-        create: (ctx) => UserService(authClient: ctx.read<AuthClient>()),
+        create: (ctx) => ChoreService(httpClient: ctx.read<http.Client>()),
+      ),
+      Provider(
+        create: (ctx) => UserService(httpClient: ctx.read<http.Client>()),
       ),
       ChangeNotifierProvider<HouseholdService>(
-        create: (ctx) => HouseholdService(authClient: ctx.read<AuthClient>()),
+        create: (ctx) => HouseholdService(httpClient: ctx.read<http.Client>()),
       ),
       Provider<NotificationPreferencesService>(
         create: (ctx) =>
-            NotificationPreferencesService(authClient: ctx.read<AuthClient>()),
+            NotificationPreferencesService(httpClient: ctx.read<http.Client>()),
       ),
       Provider<NotificationService>(create: (ctx) => NotificationService()),
       Provider<ScheduledChoresService>(
         create: (ctx) =>
-            ScheduledChoresService(authClient: ctx.read<AuthClient>()),
+            ScheduledChoresService(httpClient: ctx.read<http.Client>()),
       ),
       ChangeNotifierProvider<ChatService>(
         create: (ctx) => ChatService(
-          authClient: ctx.read<AuthClient>(),
+          httpClient: ctx.read<http.Client>(),
           authManager: ctx.read<AuthManager>(),
         ),
       ),

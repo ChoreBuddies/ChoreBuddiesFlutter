@@ -220,10 +220,6 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                           (route) => false,
                         );
-                      } else if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Registration failed')),
-                        );
                       }
                     }
                   },
