@@ -8,11 +8,19 @@ class ChoreOverview {
   int id;
   String name;
   int? assignedTo;
+  @JsonKey(defaultValue: Status.unassigned)
   Status status;
   String room;
   DateTime dueDate;
 
-  ChoreOverview(this.id, this.name, this.assignedTo, this.status, this.room, this.dueDate);
+  ChoreOverview(
+    this.id,
+    this.name,
+    this.assignedTo,
+    this.status,
+    this.room,
+    this.dueDate,
+  );
 
   factory ChoreOverview.fromJson(Map<String, dynamic> json) =>
       _$ChoreOverviewFromJson(json);
