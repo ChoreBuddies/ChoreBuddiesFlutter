@@ -30,7 +30,7 @@ class HouseholdService extends ChangeNotifier {
     }
   }
 
-  Future<Household> joinHousehold(String invitationCode) async {
+  Future<String?> joinHousehold(String invitationCode) async {
     try {
       final response = await _httpClient.put(
         _httpClient.uri('$_endpoint/join'),
@@ -40,7 +40,7 @@ class HouseholdService extends ChangeNotifier {
       final dto = AuthenticationResultDto.fromJson(json);
       _authManager.storeTokens(dto.accessToken, dto.refreshToken);
       notifyListeners();
-      return Household.fromJson(json as Map<String, dynamic>);
+      return _authManager.householdId;
     } catch (e) {
       throw Exception('Error joining household: $e');
     }
