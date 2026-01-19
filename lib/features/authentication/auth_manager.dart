@@ -1,6 +1,7 @@
 import 'package:chorebuddies_flutter/features/authentication/auth_api_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class AuthManager extends ChangeNotifier {
   final AuthApiService _authApiService;
@@ -16,6 +17,30 @@ class AuthManager extends ChangeNotifier {
 
   String? get token => _token;
   String? get refreshToken => _refreshToken;
+
+  Map<String, dynamic>? get _decodedToken {
+    if (_token == null) return null;
+    try {
+      return JwtDecoder.decode(_token!);
+    } catch (e) {
+      debugPrint('Error occured while decoding token: $e');
+      return null;
+    }
+  }
+
+  String? get userId {
+    return _decodedToken?['nameid'];
+  }
+
+  String? get householdId {
+    return _decodedToken?['HouseholdId'];
+  }
+
+  bool get hasHousehold => householdId != null && householdId!.isNotEmpty;
+
+  String? get role {
+    return _decodedToken?['role'];
+  }
 
   Future<void> init() async {
     _token = await _storage.read(key: 'auth_token');
