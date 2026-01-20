@@ -5,6 +5,9 @@ import 'package:chorebuddies_flutter/features/chores/chore_service.dart';
 import 'package:chorebuddies_flutter/features/households/household_service.dart';
 import 'package:chorebuddies_flutter/features/notifications/notification_preferences_service.dart';
 import 'package:chorebuddies_flutter/features/notifications/notification_service.dart';
+import 'package:chorebuddies_flutter/features/redeemedrewards/models/redeemed_reward.dart';
+import 'package:chorebuddies_flutter/features/redeemedrewards/redeemed_rewards_service.dart';
+import 'package:chorebuddies_flutter/features/rewards/reward_service.dart';
 import 'package:chorebuddies_flutter/features/scheduled_chores/scheduled_chores_service.dart';
 import 'package:chorebuddies_flutter/features/users/user_service.dart';
 import 'package:chorebuddies_flutter/features/chat/chat_service.dart';
@@ -65,6 +68,14 @@ Future<Widget> buildDependencies({required Widget child}) async {
       Provider<ScheduledChoresService>(
         create: (ctx) =>
             ScheduledChoresService(httpClient: ctx.read<http.Client>()),
+      ),
+      Provider<RewardService>(
+        create: (ctx) =>
+            RewardService(httpClient: ctx.read<http.Client>()),
+      ),
+      Provider<RedeemedRewardService>(
+        create: (ctx) =>
+            RedeemedRewardService(httpClient: ctx.read<http.Client>()),
       ),
       ChangeNotifierProvider<ChatService>(
         create: (ctx) => ChatService(

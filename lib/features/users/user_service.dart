@@ -23,6 +23,16 @@ class UserService {
       throw Exception('Error fetching current user: $e');
     }
   }
+    Future<int> getMyPointsCount() async {
+    try {
+      final response = await _httpClient.get(_httpClient.uri('$endpoint/myPoints'));
+      final dynamic pointsJson = jsonDecode(response.body);
+
+      return pointsJson as int;
+    } catch (e) {
+      throw Exception('Error fetching current user points count: $e');
+    }
+  }
 
   Future<List<UserMinimalDto>> getMyHouseholdMembersAsync() async {
     try {

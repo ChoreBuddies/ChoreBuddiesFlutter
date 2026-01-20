@@ -56,4 +56,19 @@ class RewardService {
       throw Exception('error updating reward: $e');
     }
   }
+
+  Future<List<Reward>> getHouseholdRewards() async {
+    try {
+      final response = await _httpClient.get(
+        _httpClient.uri('$endpoint/householdRewards'),
+      );
+      final List<dynamic> jsonList = jsonDecode(response.body);
+
+      return jsonList
+          .map((json) => Reward.fromJson(json as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      throw Exception('error getting household rewards: $e');
+    }
+  }
 }
