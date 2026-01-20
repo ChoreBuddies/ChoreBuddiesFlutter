@@ -1,3 +1,4 @@
+import 'package:chorebuddies_flutter/features/households/create_edit_page/create_edit_household_page.dart';
 import 'package:chorebuddies_flutter/features/households/household_service.dart';
 import 'package:chorebuddies_flutter/features/households/invitation_code_display.dart';
 import 'package:chorebuddies_flutter/features/households/models/household.dart';
@@ -136,7 +137,7 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    household.description,
+                    household.description ?? '',
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ],
@@ -150,7 +151,7 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
                   context,
                   MaterialPageRoute(
                     builder: (_) =>
-                        const Placeholder(), // TODO: EditHouseholdPage
+                        CreateEditHouseholdPage(householdId: household.id,),
                   ),
                 );
               },

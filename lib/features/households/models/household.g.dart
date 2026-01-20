@@ -7,9 +7,9 @@ part of 'household.dart';
 // **************************************************************************
 
 Household _$HouseholdFromJson(Map<String, dynamic> json) => Household(
-  (json['id'] as num).toInt(),
+  (json['id'] as num?)?.toInt(),
   json['name'] as String,
-  json['description'] as String,
+  json['description'] as String?,
   json['invitationCode'] as String,
 );
 

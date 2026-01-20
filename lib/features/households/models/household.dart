@@ -4,9 +4,9 @@ part 'household.g.dart';
 
 @JsonSerializable()
 class Household {
-  int id;
-  String name;
-  String description;
+  int? id;
+  String name = '';
+  String? description;
   String invitationCode;
 
   Household(this.id, this.name, this.description, this.invitationCode);
