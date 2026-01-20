@@ -3,6 +3,7 @@ import 'package:chorebuddies_flutter/UI/pages/page_not_found.dart';
 import 'package:chorebuddies_flutter/features/chat/chat_page.dart';
 import 'package:chorebuddies_flutter/UI/pages/settings_page.dart';
 import 'package:chorebuddies_flutter/features/households/household_management_page.dart';
+import 'package:chorebuddies_flutter/features/rewards/reward_shop_page.dart';
 import 'package:chorebuddies_flutter/utils/firebase_utils.dart';
 import 'package:flutter/material.dart';
 import '../pages/home_page.dart';
@@ -43,7 +44,7 @@ class MainLayoutState extends State<MainLayout> {
   final List<Widget> _pages = const [
     HomePage(),
     ChoresPage(),
-    PageNotFound(),
+    RewardsCenterPage(),
     ChatPage(),
     HouseholdManagementPage(),
     SettingsPage(),

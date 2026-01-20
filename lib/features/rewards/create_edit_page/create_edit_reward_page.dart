@@ -1,5 +1,5 @@
 import 'package:chorebuddies_flutter/features/rewards/create_edit_page/create_edit_reward_form.dart';
-import 'package:chorebuddies_flutter/features/rewards/models/Reward.dart';
+import 'package:chorebuddies_flutter/features/rewards/models/reward_dto.dart';
 import 'package:chorebuddies_flutter/features/rewards/reward_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
