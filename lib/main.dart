@@ -125,10 +125,13 @@ class _HomePageState extends State<HomePage> {
         );
       }
     });
+
+    // App in background
     _notificationService?.onMessageOpenedApp.listen((message) {
       handlePushNotification(message.data);
     });
 
+    // App opened by notification click
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null) {
         handlePushNotification(message.data);
