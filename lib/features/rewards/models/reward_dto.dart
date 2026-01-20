@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'reward.g.dart';
+part 'reward_dto.g.dart';
 
 @JsonSerializable()
 class Reward {

@@ -1,7 +1,7 @@
 import 'package:chorebuddies_flutter/UI/styles/button_styles.dart';
 import 'package:chorebuddies_flutter/UI/widgets/g_form_field.dart';
 import 'package:chorebuddies_flutter/features/rewards/create_edit_page/create_edit_reward_page.dart';
-import 'package:chorebuddies_flutter/features/rewards/models/Reward.dart';
+import 'package:chorebuddies_flutter/features/rewards/models/reward_dto.dart';
 import 'package:chorebuddies_flutter/utils/validators.dart';
 import 'package:flutter/material.dart';
 

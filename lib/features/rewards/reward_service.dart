@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:chorebuddies_flutter/core/http_client_extensions.dart';
-import 'package:chorebuddies_flutter/features/rewards/models/Reward.dart';
+import 'package:chorebuddies_flutter/features/rewards/models/reward_dto.dart';
 import 'package:chorebuddies_flutter/features/rewards/models/create_reward_dto.dart';
 import 'package:http/http.dart' as http;
 
