@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:chorebuddies_flutter/core/http_client_extensions.dart';
 import 'package:chorebuddies_flutter/features/authentication/auth_manager.dart';
+import 'package:chorebuddies_flutter/features/authentication/models/access_token_dto.dart';
 import 'package:chorebuddies_flutter/features/authentication/models/authentication_result_dto.dart';
 import 'package:chorebuddies_flutter/features/households/models/create_household_dto.dart';
 import 'package:chorebuddies_flutter/features/households/models/household.dart';
@@ -30,11 +31,14 @@ class HouseholdService extends ChangeNotifier {
       throw Exception('Error getting household: $e');
     }
   }
+
   Future<AuthenticationResultDto> createHousehold(Household household) async {
     try {
       final response = await _httpClient.post(
         _httpClient.uri('$_endpoint/add'),
-        body: jsonEncode(CreateHouseholdDto(household.name, household.description).toJson())
+        body: jsonEncode(
+          CreateHouseholdDto(household.name, household.description).toJson(),
+        ),
       );
       final dynamic json = jsonDecode(response.body);
       return AuthenticationResultDto.fromJson(json as Map<String, dynamic>);
@@ -42,12 +46,13 @@ class HouseholdService extends ChangeNotifier {
       throw Exception('Error getting household: $e');
     }
   }
+
   Future<Household> updateHousehold(Household household) async {
     int id = household.id as int;
     try {
       final response = await _httpClient.put(
         _httpClient.uri('$_endpoint/update/$id'),
-        body: jsonEncode(household.toJson())
+        body: jsonEncode(household.toJson()),
       );
       final dynamic json = jsonDecode(response.body);
       return Household.fromJson(json as Map<String, dynamic>);
@@ -63,8 +68,8 @@ class HouseholdService extends ChangeNotifier {
         body: jsonEncode(JoinHouseholdDto(invitationCode).toJson()),
       );
       final dynamic json = jsonDecode(response.body);
-      final dto = AuthenticationResultDto.fromJson(json);
-      _authManager.storeTokens(dto.accessToken, dto.refreshToken);
+      final dto = AccessTokenDto.fromJson(json);
+      _authManager.storeAccessToken(dto.accessToken);
       notifyListeners();
       return _authManager.householdId;
     } catch (e) {
