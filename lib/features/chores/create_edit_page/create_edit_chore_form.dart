@@ -9,6 +9,9 @@ import 'package:chorebuddies_flutter/features/users/models/user_minimal_dto.dart
 import 'package:chorebuddies_flutter/utils/validators.dart';
 import 'package:flutter/material.dart';
 
+import '../../predefined_chores/models/predefined_chore_dto.dart';
+import '../../predefined_chores/predefined_chore_dialog.dart';
+
 class CreateEditChoreForm extends StatefulWidget {
   final ChoreViewModel model;
   final List<UserMinimalDto> users;
@@ -107,6 +110,37 @@ class _CreateEditChoreFormState extends State<CreateEditChoreForm> {
     super.dispose();
   }
 
+  Future<void> _pickFromTemplate() async {
+    final PredefinedChoreDto? template = await showDialog<PredefinedChoreDto>(
+      context: context,
+      builder: (context) => const PredefinedChoreSelectorDialog(),
+    );
+
+    if (template != null) {
+      setState(() {
+        nameController.text = template.name;
+        descriptionController.text = template.description;
+        roomController.text = template.room;
+        rewardPointsController.text = template.rewardPointsCount.toString();
+        choreDurationController.text = template.choreDuration.toString();
+        everyXController.text = template.everyX.toString();
+
+        isScheduled = true;
+
+        frequency = template.frequency;
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Data loaded from template. You can now edit it."),
+            backgroundColor: Colors.blue,
+          ),
+        );
+      }
+    }
+  }
+
   bool get _readOnly => mode == PageMode.view;
   @override
   Widget build(BuildContext context) {
@@ -115,6 +149,18 @@ class _CreateEditChoreFormState extends State<CreateEditChoreForm> {
       child: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          if (mode == PageMode.create) ...[
+            OutlinedButton.icon(
+              onPressed: _pickFromTemplate,
+              icon: const Icon(Icons.copy),
+              label: const Text("Select from predefined"),
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.all(12),
+                side: BorderSide(color: Theme.of(context).primaryColor),
+              ),
+            ),
+            const SizedBox(height: 20),
+          ],
           GFormField(
             labelText: 'Name',
             controller: nameController,
