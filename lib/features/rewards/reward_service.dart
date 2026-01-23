@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:chorebuddies_flutter/core/http_client_extensions.dart';
+import 'package:chorebuddies_flutter/features/predefined_rewards/models/predefined_reward_request.dart';
 import 'package:chorebuddies_flutter/features/rewards/models/reward_dto.dart';
 import 'package:chorebuddies_flutter/features/rewards/models/create_reward_dto.dart';
 import 'package:http/http.dart' as http;
@@ -40,6 +41,17 @@ class RewardService {
       return Reward.fromJson(jsonReward);
     } catch (e) {
       throw Exception('error adding reward: $e');
+    }
+  }
+
+  Future<void> addPredefinedRewards(PredefinedRewardRequest request) async {
+    final response = await _httpClient.post(
+      _httpClient.uri('$endpoint/add-predefined'),
+      body: jsonEncode(request.toJson()),
+    );
+
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      return;
     }
   }
 

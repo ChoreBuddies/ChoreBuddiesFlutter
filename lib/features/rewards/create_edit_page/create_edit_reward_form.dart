@@ -1,5 +1,7 @@
 import 'package:chorebuddies_flutter/UI/styles/button_styles.dart';
 import 'package:chorebuddies_flutter/UI/widgets/g_form_field.dart';
+import 'package:chorebuddies_flutter/features/predefined_rewards/models/predefined_reward_dto.dart';
+import 'package:chorebuddies_flutter/features/predefined_rewards/predefined_reward_dialog.dart';
 import 'package:chorebuddies_flutter/features/rewards/create_edit_page/create_edit_reward_page.dart';
 import 'package:chorebuddies_flutter/features/rewards/models/reward_dto.dart';
 import 'package:chorebuddies_flutter/utils/validators.dart';
@@ -81,6 +83,31 @@ class _CreateEditRewardFormState extends State<CreateEditRewardForm> {
 
   bool get _readOnly => mode == PageMode.view;
 
+  Future<void> _pickFromTemplate() async {
+    final PredefinedRewardDto? template = await showDialog<PredefinedRewardDto>(
+      context: context,
+      builder: (context) => const PredefinedRewardSelectorDialog(),
+    );
+
+    if (template != null) {
+      setState(() {
+        nameController.text = template.name;
+        descriptionController.text = template.description;
+        costController.text = template.cost.toString();
+        quantityController.text = template.quantityAvailable.toString();
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Data loaded from template. You can now edit it."),
+            backgroundColor: Colors.blue,
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -88,6 +115,18 @@ class _CreateEditRewardFormState extends State<CreateEditRewardForm> {
       child: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          if (mode == PageMode.create) ...[
+            OutlinedButton.icon(
+              onPressed: _pickFromTemplate,
+              icon: const Icon(Icons.copy),
+              label: const Text("Select from predefined"),
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.all(12),
+                side: BorderSide(color: Theme.of(context).primaryColor),
+              ),
+            ),
+            const SizedBox(height: 20),
+          ],
           GFormField(
             labelText: 'Name',
             controller: nameController,

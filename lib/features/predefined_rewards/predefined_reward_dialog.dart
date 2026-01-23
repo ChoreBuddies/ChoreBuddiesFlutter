@@ -1,26 +1,27 @@
-import 'package:chorebuddies_flutter/features/predefined_chores/models/predefined_chore_dto.dart';
-import 'package:chorebuddies_flutter/features/predefined_chores/predefined_chore_service.dart';
+import 'package:chorebuddies_flutter/features/predefined_rewards/predefined_reward_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class PredefinedChoreSelectorDialog extends StatefulWidget {
-  const PredefinedChoreSelectorDialog({super.key});
+import 'models/predefined_reward_dto.dart';
+
+class PredefinedRewardSelectorDialog extends StatefulWidget {
+  const PredefinedRewardSelectorDialog({super.key});
 
   @override
-  State<PredefinedChoreSelectorDialog> createState() => _PredefinedChoreSelectorDialogState();
+  State<PredefinedRewardSelectorDialog> createState() => _PredefinedRewardSelectorDialogState();
 }
 
-class _PredefinedChoreSelectorDialogState extends State<PredefinedChoreSelectorDialog> {
+class _PredefinedRewardSelectorDialogState extends State<PredefinedRewardSelectorDialog> {
   final TextEditingController _searchController = TextEditingController();
-  List<PredefinedChoreDto> _allChores = [];
-  List<PredefinedChoreDto> _filteredChores = [];
+  List<PredefinedRewardDto> _allRewards = [];
+  List<PredefinedRewardDto> _filteredRewards = [];
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
     _loadData();
-    _searchController.addListener(_filterChores);
+    _searchController.addListener(_filterRewards);
   }
 
   @override
@@ -31,12 +32,12 @@ class _PredefinedChoreSelectorDialogState extends State<PredefinedChoreSelectorD
 
   Future<void> _loadData() async {
     try {
-      final service = context.read<PredefinedChoreService>();
-      final result = await service.getAllPredefinedChores();
+      final service = context.read<PredefinedRewardService>();
+      final result = await service.getAllPredefinedRewards();
       if (mounted) {
         setState(() {
-          _allChores = result..sort((a, b) => '${a.room}${a.name}'.compareTo('${b.room}${b.name}'));
-          _filteredChores = _allChores;
+          _allRewards = result..sort((a, b) => a.name.compareTo(b.name));
+          _filteredRewards = _allRewards;
           _isLoading = false;
         });
       }
@@ -47,16 +48,16 @@ class _PredefinedChoreSelectorDialogState extends State<PredefinedChoreSelectorD
     }
   }
 
-  void _filterChores() {
+  void _filterRewards() {
     final query = _searchController.text.toLowerCase();
     setState(() {
       if (query.isEmpty) {
-        _filteredChores = _allChores;
+        _filteredRewards = _allRewards;
       } else {
-        _filteredChores = _allChores.where((element) {
+        _filteredRewards = _allRewards.where((element) {
           return element.name.toLowerCase().contains(query) ||
-              element.room.toLowerCase().contains(query) ||
-              element.rewardPointsCount.toString().contains(query);
+              element.cost.toString().contains(query) ||
+              element.quantityAvailable.toString().contains(query);
         }).toList();
       }
     });
@@ -71,14 +72,14 @@ class _PredefinedChoreSelectorDialogState extends State<PredefinedChoreSelectorD
         child: Column(
           children: [
             Text(
-              "Choose predefined chore",
+              "Choose predefined reward",
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 16),
             TextField(
               controller: _searchController,
               decoration: const InputDecoration(
-                labelText: "Search (name, room, points)...",
+                labelText: "Search (name, cost, quantity)...",
                 prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(),
               ),
@@ -87,19 +88,19 @@ class _PredefinedChoreSelectorDialogState extends State<PredefinedChoreSelectorD
             Expanded(
               child: _isLoading
                   ? const Center(child: CircularProgressIndicator())
-                  : _filteredChores.isEmpty
-                  ? const Center(child: Text("No chores found"))
+                  : _filteredRewards.isEmpty
+                  ? const Center(child: Text("No rewards found"))
                   : ListView.separated(
-                itemCount: _filteredChores.length,
+                itemCount: _filteredRewards.length,
                 separatorBuilder: (_, __) => const Divider(height: 1),
                 itemBuilder: (context, index) {
-                  final chore = _filteredChores[index];
+                  final reward = _filteredRewards[index];
                   return ListTile(
-                    title: Text(chore.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                    subtitle: Text("${chore.room} • ${chore.rewardPointsCount} pts"),
+                    title: Text(reward.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    subtitle: Text("${reward.cost} pts • ${reward.quantityAvailable}"),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
-                      Navigator.of(context).pop(chore);
+                      Navigator.of(context).pop(reward);
                     },
                   );
                 },
