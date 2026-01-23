@@ -24,26 +24,18 @@ class ApiExceptionInterceptor extends http.BaseClient {
       final response = await http.Response.fromStream(streamResponse);
       _handleError(response);
 
-      throw http.ClientException(
-          'API Error: ${response.statusCode}',
-          Uri.parse(request.url.toString())
+      return http.StreamedResponse(
+        http.ByteStream.fromBytes(response.bodyBytes),
+        response.statusCode,
+        request: response.request,
+        headers: response.headers,
+        isRedirect: response.isRedirect,
+        persistentConnection: response.persistentConnection,
+        reasonPhrase: response.reasonPhrase,
       );
 
-      // Copy to return response
-      // return http.StreamedResponse(
-      //   http.ByteStream.fromBytes(response.bodyBytes),
-      //   response.statusCode,
-      //   request: response.request,
-      //   headers: response.headers,
-      //   isRedirect: response.isRedirect,
-      //   persistentConnection: response.persistentConnection,
-      //   reasonPhrase: response.reasonPhrase,
-      // );
-
     } catch (e) {
-      if (e is! http.ClientException) {
-        _showSnackBar('Connection error', 'Check your internet connection.');
-      }
+      _showSnackBar('Connection error', 'Check your internet connection.');
       rethrow;
     }
   }
