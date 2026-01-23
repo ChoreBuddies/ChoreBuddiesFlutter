@@ -32,16 +32,19 @@ class HouseholdService extends ChangeNotifier {
     }
   }
 
-  Future<AuthenticationResultDto> createHousehold(Household household) async {
+  Future<String?> createHousehold(Household household) async {
     try {
       final response = await _httpClient.post(
         _httpClient.uri('$_endpoint/add'),
-        body: jsonEncode(
-          CreateHouseholdDto(household.name, household.description).toJson(),
-        ),
+        body: jsonEncode(CreateHouseholdDto(household.name, household.description).toJson()
+        )
       );
       final dynamic json = jsonDecode(response.body);
-      return AuthenticationResultDto.fromJson(json as Map<String, dynamic>);
+      final dto = AccessTokenDto.fromJson(json);
+      _authManager.storeAccessToken(dto.accessToken);
+      notifyListeners();
+
+      return _authManager.householdId;
     } catch (e) {
       throw Exception('Error getting household: $e');
     }

@@ -7,6 +7,9 @@ import 'package:chorebuddies_flutter/features/scheduled_chores/models/scheduled_
 import 'package:chorebuddies_flutter/features/scheduled_chores/models/scheduled_chores_tile_view_dto.dart';
 import 'package:http/http.dart' as http;
 
+import '../../core/app_config.dart';
+import '../predefined_chores/models/predefined_chore_request.dart';
+
 class ScheduledChoresService {
   final http.Client _httpClient;
 
@@ -112,6 +115,17 @@ class ScheduledChoresService {
       return ScheduledChoreDto.fromJson(json);
     } catch (e) {
       throw Exception('Error creating scheduled chore: $e');
+    }
+  }
+
+  Future<void> addPredefinedChores(PredefinedChoreRequest request) async {
+    final response = await _httpClient.post(
+      _httpClient.uri('$_endpoint/add-predefined'),
+      body: jsonEncode(request.toJson()),
+    );
+
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      return;
     }
   }
 
