@@ -8,6 +8,8 @@ import 'package:chorebuddies_flutter/features/users/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../predefined_chores/setup_chores_page.dart';
+
 enum PageMode { create, view, edit }
 
 class CreateEditHouseholdPage extends StatefulWidget {
@@ -56,14 +58,16 @@ class _CreateEditHouseholdPageState extends State<CreateEditHouseholdPage> {
       result = await householdService.createHousehold(updatedModel);
     }
     if(!mounted) return;
-    if (result != null) {
+    if (result != null && result != "") {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Saved successfully!')));
       if (pageMode == PageMode.create) {
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const MainLayout()),
-          (Route<dynamic> route) => false,
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SetupChoresPage(),
+          ),
         );
       } else {
         setState(() {
