@@ -1,23 +1,22 @@
 import 'package:chorebuddies_flutter/UI/layout/main_layout.dart';
-import 'package:chorebuddies_flutter/features/predefined_chores/predefined_chore_service.dart';
-import 'package:chorebuddies_flutter/features/predefined_rewards/setup_rewards_page.dart';
-import 'package:chorebuddies_flutter/features/scheduled_chores/scheduled_chores_service.dart';
+import 'package:chorebuddies_flutter/features/predefined_rewards/predefined_reward_service.dart';
+import 'package:chorebuddies_flutter/features/rewards/reward_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'models/predefined_chore_dto.dart';
-import 'models/predefined_chore_request.dart';
+import 'models/predefined_reward_dto.dart';
+import 'models/predefined_reward_request.dart';
 
-class SetupChoresPage extends StatefulWidget {
-  const SetupChoresPage({super.key});
+class SetupRewardsPage extends StatefulWidget {
+  const SetupRewardsPage({super.key});
 
   @override
-  State<SetupChoresPage> createState() => _SetupChoresPageState();
+  State<SetupRewardsPage> createState() => _SetupRewardsPageState();
 }
 
-class _SetupChoresPageState extends State<SetupChoresPage> {
+class _SetupRewardsPageState extends State<SetupRewardsPage> {
   bool _isLoading = true;
-  Map<String, List<PredefinedChoreDto>> _groupedChores = {};
+  List<PredefinedRewardDto> _allRewards = [];
   final Set<int> _selectedIds = {};
 
   @override
@@ -28,26 +27,10 @@ class _SetupChoresPageState extends State<SetupChoresPage> {
 
   Future<void> _loadData() async {
     try {
-      final service = context.read<PredefinedChoreService>();
-      final chores = await service.getAllPredefinedChores();
-
-      // Group by room
-      final Map<String, List<PredefinedChoreDto>> groups = {};
-      for (var chore in chores) {
-        if (!groups.containsKey(chore.room)) {
-          groups[chore.room] = [];
-        }
-        groups[chore.room]!.add(chore);
-      }
-
-      // Sort
-      final sortedKeys = groups.keys.toList()..sort();
-      final Map<String, List<PredefinedChoreDto>> sortedGroups = {
-        for (var key in sortedKeys) key: groups[key]!
-      };
+      final service = context.read<PredefinedRewardService>();
+      _allRewards = await service.getAllPredefinedRewards();
 
       setState(() {
-        _groupedChores = sortedGroups;
         _isLoading = false;
       });
     } catch (e) {
@@ -60,8 +43,8 @@ class _SetupChoresPageState extends State<SetupChoresPage> {
     }
   }
 
-  Color _getColorForRoom(String roomName) {
-    if (roomName.isEmpty) return const Color(0xFF424242);
+  Color _getColorForReward(String rewardName) {
+    if (rewardName.isEmpty) return const Color(0xFF424242);
 
     const customColors = [
       Color(0xFF5B6FE6), // Primary Blue
@@ -74,7 +57,7 @@ class _SetupChoresPageState extends State<SetupChoresPage> {
       Color(0xFF00796B), // Teal Green
     ];
 
-    final index = roomName.hashCode.abs() % customColors.length;
+    final index = rewardName.hashCode.abs() % customColors.length;
     return customColors[index];
   }
 
@@ -83,20 +66,20 @@ class _SetupChoresPageState extends State<SetupChoresPage> {
 
     setState(() => _isLoading = true);
     try {
-      final request = PredefinedChoreRequest(
-        predefinedChoreIds: _selectedIds.toList(),
+      final request = PredefinedRewardRequest(
+        predefinedRewardIds: _selectedIds.toList(),
       );
 
-      await context.read<ScheduledChoresService>().addPredefinedChores(request);
+      await context.read<RewardService>().addPredefinedRewards(request);
 
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Chores have been added!')),
+        const SnackBar(content: Text('Rewards have been added!')),
       );
 
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => const SetupRewardsPage()),
+        MaterialPageRoute(builder: (context) => const MainLayout()),
             (route) => false,
       );
 
@@ -112,7 +95,7 @@ class _SetupChoresPageState extends State<SetupChoresPage> {
 
   void _onSkip() {
     Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => const SetupRewardsPage()),
+      MaterialPageRoute(builder: (context) => const MainLayout()),
           (route) => false,
     );
   }
@@ -120,7 +103,7 @@ class _SetupChoresPageState extends State<SetupChoresPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Setup chores")),
+      appBar: AppBar(title: const Text("Setup rewards")),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : Column(
@@ -132,22 +115,16 @@ class _SetupChoresPageState extends State<SetupChoresPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Choose your starting chores",
+                    "Choose your starting rewards",
                     style: Theme.of(context).textTheme.headlineMedium,
                   ),
                   const SizedBox(height: 8),
                   const Text(
-                    "Select the chores you want to add to your new household.",
+                    "Select the rewards you want to add to your new household.",
                     style: TextStyle(fontSize: 16, color: Colors.grey),
                   ),
                   const SizedBox(height: 24),
-
-                  ..._groupedChores.entries.map((entry) {
-                    final roomName = entry.key;
-                    final chores = entry.value;
-                    final color = _getColorForRoom(roomName);
-
-                    return Card(
+                  Card(
                       margin: const EdgeInsets.only(bottom: 16),
                       elevation: 2,
                       shape: RoundedRectangleBorder(
@@ -159,11 +136,11 @@ class _SetupChoresPageState extends State<SetupChoresPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              roomName,
+                              "Rewards",
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                color: color,
+                                color: Colors.black,
                               ),
                             ),
                             const SizedBox(height: 12),
@@ -171,10 +148,11 @@ class _SetupChoresPageState extends State<SetupChoresPage> {
                             Wrap(
                               spacing: 8.0,
                               runSpacing: 8.0,
-                              children: chores.map((chore) {
-                                final isSelected = _selectedIds.contains(chore.id);
+                              children: _allRewards.map((reward) {
+                                final isSelected = _selectedIds.contains(reward.id);
+                                final color = _getColorForReward(reward.name);
                                 return RawChip(
-                                  label: Text('${chore.name} (${chore.rewardPointsCount})'),
+                                  label: Text('${reward.name} (${reward.cost})'),
                                   selected: isSelected,
                                   showCheckmark: true,
                                   checkmarkColor: color,
@@ -198,9 +176,9 @@ class _SetupChoresPageState extends State<SetupChoresPage> {
                                   onSelected: (val) {
                                     setState(() {
                                       if (val) {
-                                        _selectedIds.add(chore.id);
+                                        _selectedIds.add(reward.id);
                                       } else {
-                                        _selectedIds.remove(chore.id);
+                                        _selectedIds.remove(reward.id);
                                       }
                                     });
                                   },
@@ -210,8 +188,7 @@ class _SetupChoresPageState extends State<SetupChoresPage> {
                           ],
                         ),
                       ),
-                    );
-                  }).toList(),
+                    ),
                 ],
               ),
             ),
