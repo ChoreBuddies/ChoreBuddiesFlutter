@@ -49,7 +49,7 @@ class _RewardsCenterPageState extends State<RewardsCenterPage> {
       final results = await Future.wait([
         rewardService.getHouseholdRewards(),
         redeemedRewardService.getUsersRedeemedRewards(),
-        userService.getMyPointsCount()
+        userService.getMyPointsCount(),
       ]);
       if (!mounted) return;
       setState(() {
@@ -106,20 +106,16 @@ class _RewardsCenterPageState extends State<RewardsCenterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Rewards Center'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            tooltip: 'Add new reward',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => CreateEditRewardPage()),
-              );
-            },
-          ),
-        ],
+      appBar: AppBar(title: const Text('Rewards Center')),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CreateEditRewardPage()),
+          ).then((_) => setState(() {}));
+        },
+        label: const Text('Add new Reward'),
+        icon: const Icon(Icons.add),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
