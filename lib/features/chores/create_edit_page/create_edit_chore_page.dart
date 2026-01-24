@@ -1,3 +1,5 @@
+import 'package:chorebuddies_flutter/UI/styles/button_styles.dart';
+import 'package:chorebuddies_flutter/UI/styles/colors.dart';
 import 'package:chorebuddies_flutter/features/chores/chore_service.dart';
 import 'package:chorebuddies_flutter/features/chores/create_edit_page/create_edit_chore_form.dart';
 import 'package:chorebuddies_flutter/features/chores/mappers/chore_view_model_mapper.dart';
@@ -70,7 +72,11 @@ class _CreateEditChorePageState extends State<CreateEditChorePage> {
           title: const Text('Confirm'),
           content: const Text('Mark this chore as done?'),
           actions: [
-            TextButton(
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(color: AppColors.cancel),
+                foregroundColor: AppColors.cancel,
+              ),
               onPressed: () => Navigator.pop(context, false),
               child: const Text('Cancel'),
             ),

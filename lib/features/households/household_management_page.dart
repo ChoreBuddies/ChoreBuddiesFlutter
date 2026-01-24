@@ -1,3 +1,5 @@
+import 'package:chorebuddies_flutter/UI/styles/button_styles.dart';
+import 'package:chorebuddies_flutter/UI/styles/colors.dart';
 import 'package:chorebuddies_flutter/features/authentication/auth_manager.dart';
 import 'package:chorebuddies_flutter/features/households/create_edit_page/create_edit_household_page.dart';
 import 'package:chorebuddies_flutter/features/households/household_service.dart';
@@ -27,6 +29,10 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
   bool _isLoading = true;
   String? _errorMessage;
 
+  bool _isEditingRoles = false;
+  bool _isSavingRoles = false;
+  Map<int, String> _originalRoles = {};
+
   @override
   void initState() {
     super.initState();
@@ -35,45 +41,97 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
     });
   }
 
-  bool _canEditRole(int id) {
+  bool _isChild() {
     final service = context.read<AuthManager>();
-    return service.role != "Child" && id.toString() != service.userId;
+    return service.role == "Child";
   }
 
-  void _handleRoleChanged(int userId, String? roleName) async {
-    if (roleName == null) return;
+  bool _canEditRole(int id) {
+    final service = context.read<AuthManager>();
+    return !_isChild() &&
+        id.toString() != service.userId &&
+        _isEditingRoles &&
+        !_isSavingRoles;
+  }
+
+  Future<void> _saveRoles() async {
+    setState(() {
+      _isSavingRoles = true;
+    });
+
     final service = context.read<UserService>();
+    bool allSuccess = true;
 
-    try {
-      final result = await service.updateUserRole(userId, roleName);
+    // Pętla po użytkownikach i wysłanie requestów tylko dla zmienionych ról
+    for (var user in _users) {
+      final originalRole = _originalRoles[user.id];
 
-      if (!mounted) return;
-
-      if (result) {
-        setState(() {
-          final index = _users.indexWhere((c) => c.id == userId);
-          if (index != -1) {
-            _users[index].roleName = roleName;
+      // Jeśli rola się zmieniła, wywołujemy serwis
+      if (originalRole != null && originalRole != user.roleName) {
+        try {
+          final result = await service.updateUserRole(user.id, user.roleName);
+          if (!result) {
+            allSuccess = false;
           }
-        });
+        } catch (e) {
+          allSuccess = false;
+          debugPrint("Error updating user ${user.id}: $e");
+        }
+      }
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _isSavingRoles = false;
+      if (allSuccess) {
+        _isEditingRoles = false;
+        _originalRoles.clear();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Roles updated successfully'),
+            backgroundColor: Colors.green,
+          ),
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Error role'),
-            backgroundColor: Colors.red,
+            content: Text('Some roles failed to update'),
+            backgroundColor: Colors.orange,
           ),
         );
+        _isEditingRoles = false;
       }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('An unexpected error occurred: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+    });
+  }
+
+  void _cancelEditingRoles() {
+    setState(() {
+      _isEditingRoles = false;
+      for (var user in _users) {
+        if (_originalRoles.containsKey(user.id)) {
+          user.roleName = _originalRoles[user.id]!;
+        }
       }
-    }
+      _originalRoles.clear();
+    });
+  }
+
+  void _startEditingRoles() {
+    setState(() {
+      _isEditingRoles = true;
+      _originalRoles = {for (var user in _users) user.id: user.roleName};
+    });
+  }
+
+  void _onRoleDropdownChanged(int userId, String? newRole) {
+    if (newRole == null) return;
+    setState(() {
+      final index = _users.indexWhere((u) => u.id == userId);
+      if (index != -1) {
+        _users[index].roleName = newRole;
+      }
+    });
   }
 
   Future<void> _loadData() async {
@@ -223,10 +281,46 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ),
+                if (!_isEditingRoles && !_isChild())
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    tooltip: 'Edit roles',
+                    onPressed: _startEditingRoles,
+                  ),
               ],
             ),
             const Divider(),
             ...users.map(_userTile),
+            if (_isEditingRoles) ...[
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: AppColors.cancel),
+                      foregroundColor: AppColors.cancel,
+                    ),
+                    onPressed: _isSavingRoles ? null : _cancelEditingRoles,
+                    child: const Text('Cancel'),
+                  ),
+                  const SizedBox(width: 8),
+                  FilledButton(
+                    onPressed: _isSavingRoles ? null : _saveRoles,
+                    child: _isSavingRoles
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Text('Save'),
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
       ),
@@ -248,13 +342,15 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
           canEdit
               ? DropdownButton<String>(
                   value: user.roleName,
+                  isDense: true,
+                  underline: Container(height: 1, color: Colors.grey),
                   items: availableRoles
                       .map(
                         (role) =>
                             DropdownMenuItem(value: role, child: Text(role)),
                       )
                       .toList(),
-                  onChanged: (value) => _handleRoleChanged(user.id, value),
+                  onChanged: (value) => _onRoleDropdownChanged(user.id, value),
                 )
               : Padding(
                   padding: const EdgeInsets.only(right: 12.0),
