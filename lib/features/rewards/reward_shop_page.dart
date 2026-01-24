@@ -114,10 +114,10 @@ class _RewardsCenterPageState extends State<RewardsCenterPage> {
             MaterialPageRoute(builder: (context) => CreateEditRewardPage()),
           ).then((_) async {
             _rewards = await rewardService.getHouseholdRewards();
-            setState(() { });
-        });
+            setState(() {});
+          });
         },
-        label: const Text('Add new Reward'),
+        label: const Text('Add New Reward'),
         icon: const Icon(Icons.add),
       ),
       body: ListView(
