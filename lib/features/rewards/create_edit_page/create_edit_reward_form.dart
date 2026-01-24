@@ -119,7 +119,7 @@ class _CreateEditRewardFormState extends State<CreateEditRewardForm> {
             OutlinedButton.icon(
               onPressed: _pickFromTemplate,
               icon: const Icon(Icons.copy),
-              label: const Text("Select from predefined"),
+              label: const Text("Select From Predefined"),
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.all(12),
                 side: BorderSide(color: Theme.of(context).primaryColor),
