@@ -21,7 +21,8 @@ class CreateEditHouseholdForm extends StatefulWidget {
   });
 
   @override
-  State<CreateEditHouseholdForm> createState() => _CreateEditHouseholdFormState();
+  State<CreateEditHouseholdForm> createState() =>
+      _CreateEditHouseholdFormState();
 }
 
 class _CreateEditHouseholdFormState extends State<CreateEditHouseholdForm> {
@@ -43,7 +44,7 @@ class _CreateEditHouseholdFormState extends State<CreateEditHouseholdForm> {
       widget.onValidSubmit?.call(model);
     }
     _isLoading = false;
-    if(mode == PageMode.create) return;
+    if (mode == PageMode.create) return;
     setState(() => mode = PageMode.view);
     widget.onPageModeChanged?.call(mode);
   }
@@ -120,16 +121,13 @@ class _CreateEditHouseholdFormState extends State<CreateEditHouseholdForm> {
                     child: const Text('Cancel'),
                   ),
                 const SizedBox(width: 10),
-                ElevatedButton(
+                FilledButton(
                   onPressed: () => _onSave(),
                   child: _isLoading
                       ? const SizedBox(
                           width: 20,
                           height: 10,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
+                          child: CircularProgressIndicator(strokeWidth: 2),
                         )
                       : const Text('Save'),
                 ),

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:chorebuddies_flutter/core/http_client_extensions.dart';
 import 'package:chorebuddies_flutter/features/users/models/update_fcmtoken_dto.dart';
+import 'package:chorebuddies_flutter/features/users/models/update_role_dto.dart';
 import 'package:chorebuddies_flutter/features/users/models/update_user_dto.dart';
 import 'package:chorebuddies_flutter/features/users/models/user.dart';
 import 'package:http/http.dart' as http;
@@ -15,7 +16,9 @@ class UserService {
 
   Future<User> getMe() async {
     try {
-      final response = await _httpClient.get(await _httpClient.uri('$endpoint/me'));
+      final response = await _httpClient.get(
+        await _httpClient.uri('$endpoint/me'),
+      );
       final Map<String, dynamic> meJson = jsonDecode(response.body);
 
       return User.fromJson(meJson);
@@ -23,9 +26,12 @@ class UserService {
       throw Exception('Error fetching current user: $e');
     }
   }
-    Future<int> getMyPointsCount() async {
+
+  Future<int> getMyPointsCount() async {
     try {
-      final response = await _httpClient.get(_httpClient.uri('$endpoint/myPoints'));
+      final response = await _httpClient.get(
+        _httpClient.uri('$endpoint/myPoints'),
+      );
       final dynamic pointsJson = jsonDecode(response.body);
 
       return pointsJson as int;
@@ -51,10 +57,12 @@ class UserService {
 
   Future<List<UserRole>> getUsersRolesFromHousehold() async {
     try {
-      final response = await _httpClient.get(_httpClient.uri('$endpoint/household?role=true'));
+      final response = await _httpClient.get(
+        _httpClient.uri('$endpoint/household?role=true'),
+      );
       final List<dynamic> usersJson = jsonDecode(response.body);
 
-        return usersJson
+      return usersJson
           .map((json) => UserRole.fromJson(json as Map<String, dynamic>))
           .toList();
     } catch (e) {
@@ -94,6 +102,26 @@ class UserService {
       }
     } catch (e) {
       throw Exception('Error updating current user: $e');
+    }
+  }
+
+  Future<bool> updateUserRole(id, roleName) async {
+    var dto = UpdatRoleDto(id: id, roleName: roleName);
+    try {
+      final response = await _httpClient.put(
+        _httpClient.uri('$endpoint/role'),
+        body: jsonEncode(dto.toJson()),
+        headers: {'Content-Type': 'application/json'},
+      );
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        throw Exception(
+          'Failed to update user role: ${response.statusCode} ${response.body}',
+        );
+      }
+    } catch (e) {
+      throw Exception('Error updating current user role: $e');
     }
   }
 

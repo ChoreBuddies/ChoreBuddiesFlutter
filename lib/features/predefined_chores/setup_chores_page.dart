@@ -43,7 +43,7 @@ class _SetupChoresPageState extends State<SetupChoresPage> {
       // Sort
       final sortedKeys = groups.keys.toList()..sort();
       final Map<String, List<PredefinedChoreDto>> sortedGroups = {
-        for (var key in sortedKeys) key: groups[key]!
+        for (var key in sortedKeys) key: groups[key]!,
       };
 
       setState(() {
@@ -91,21 +91,20 @@ class _SetupChoresPageState extends State<SetupChoresPage> {
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Chores have been added!')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Chores have been added!')));
 
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const SetupRewardsPage()),
-            (route) => false,
+        (route) => false,
       );
-
     } catch (e) {
       setState(() => _isLoading = false);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error while saving: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error while saving: $e')));
       }
     }
   }
@@ -113,7 +112,7 @@ class _SetupChoresPageState extends State<SetupChoresPage> {
   void _onSkip() {
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => const SetupRewardsPage()),
-          (route) => false,
+      (route) => false,
     );
   }
 
@@ -124,131 +123,139 @@ class _SetupChoresPageState extends State<SetupChoresPage> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Choose your starting chores",
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    "Select the chores you want to add to your new household.",
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
-                  ),
-                  const SizedBox(height: 24),
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Choose your starting chores",
+                          style: Theme.of(context).textTheme.headlineMedium,
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          "Select the chores you want to add to your new household.",
+                          style: TextStyle(fontSize: 16, color: Colors.grey),
+                        ),
+                        const SizedBox(height: 24),
 
-                  ..._groupedChores.entries.map((entry) {
-                    final roomName = entry.key;
-                    final chores = entry.value;
-                    final color = _getColorForRoom(roomName);
+                        ..._groupedChores.entries.map((entry) {
+                          final roomName = entry.key;
+                          final chores = entry.value;
+                          final color = _getColorForRoom(roomName);
 
-                    return Card(
-                      margin: const EdgeInsets.only(bottom: 16),
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              roomName,
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: color,
-                              ),
+                          return Card(
+                            margin: const EdgeInsets.only(bottom: 16),
+                            elevation: 2,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                            const SizedBox(height: 12),
-
-                            Wrap(
-                              spacing: 8.0,
-                              runSpacing: 8.0,
-                              children: chores.map((chore) {
-                                final isSelected = _selectedIds.contains(chore.id);
-                                return RawChip(
-                                  label: Text('${chore.name} (${chore.rewardPointsCount})'),
-                                  selected: isSelected,
-                                  showCheckmark: true,
-                                  checkmarkColor: color,
-
-                                  backgroundColor: Colors.white,
-                                  selectedColor: color.withOpacity(0.15),
-
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    side: BorderSide(
-                                        color: color,
-                                        width: 1.5
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    roomName,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: color,
                                     ),
                                   ),
+                                  const SizedBox(height: 12),
 
-                                  labelStyle: TextStyle(
-                                    color: color,
-                                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                  Wrap(
+                                    spacing: 8.0,
+                                    runSpacing: 8.0,
+                                    children: chores.map((chore) {
+                                      final isSelected = _selectedIds.contains(
+                                        chore.id,
+                                      );
+                                      return RawChip(
+                                        label: Text(
+                                          '${chore.name} (${chore.rewardPointsCount})',
+                                        ),
+                                        selected: isSelected,
+                                        showCheckmark: true,
+                                        checkmarkColor: color,
+
+                                        backgroundColor: Colors.white,
+                                        selectedColor: color.withOpacity(0.15),
+
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                          side: BorderSide(
+                                            color: color,
+                                            width: 1.5,
+                                          ),
+                                        ),
+
+                                        labelStyle: TextStyle(
+                                          color: color,
+                                          fontWeight: isSelected
+                                              ? FontWeight.bold
+                                              : FontWeight.normal,
+                                        ),
+
+                                        onSelected: (val) {
+                                          setState(() {
+                                            if (val) {
+                                              _selectedIds.add(chore.id);
+                                            } else {
+                                              _selectedIds.remove(chore.id);
+                                            }
+                                          });
+                                        },
+                                      );
+                                    }).toList(),
                                   ),
-
-                                  onSelected: (val) {
-                                    setState(() {
-                                      if (val) {
-                                        _selectedIds.add(chore.id);
-                                      } else {
-                                        _selectedIds.remove(chore.id);
-                                      }
-                                    });
-                                  },
-                                );
-                              }).toList(),
+                                ],
+                              ),
                             ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                ],
-              ),
-            ),
-          ),
-
-          Container(
-            padding: const EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, -5),
-                )
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton(
-                  onPressed: _onSkip,
-                  child: const Text("Skip"),
-                ),
-                const SizedBox(width: 16),
-                ElevatedButton(
-                  onPressed: _selectedIds.isNotEmpty ? _onSave : null,
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          );
+                        }).toList(),
+                      ],
+                    ),
                   ),
-                  child: Text("Add selected (${_selectedIds.length})"),
+                ),
+
+                Container(
+                  padding: const EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, -5),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(onPressed: _onSkip, child: const Text("Skip")),
+                      const SizedBox(width: 16),
+                      FilledButton(
+                        onPressed: _selectedIds.isNotEmpty ? _onSave : null,
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 12,
+                          ),
+                        ),
+                        child: Text("Add selected (${_selectedIds.length})"),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
-          ),
-        ],
-      ),
     );
   }
 }

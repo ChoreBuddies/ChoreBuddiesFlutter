@@ -224,7 +224,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       }
                     }
                   },
-                  child: const Text('Sign up'),
+                  child: const Text('Sign Up'),
                 ),
 
                 const SizedBox(height: 16),

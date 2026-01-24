@@ -1,3 +1,4 @@
+import 'package:chorebuddies_flutter/features/authentication/auth_manager.dart';
 import 'package:chorebuddies_flutter/features/households/create_edit_page/create_edit_household_page.dart';
 import 'package:chorebuddies_flutter/features/households/household_service.dart';
 import 'package:chorebuddies_flutter/features/households/invitation_code_display.dart';
@@ -32,6 +33,47 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadData();
     });
+  }
+
+  bool _canEditRole(int id) {
+    final service = context.read<AuthManager>();
+    return service.role != "Child" && id.toString() != service.userId;
+  }
+
+  void _handleRoleChanged(int userId, String? roleName) async {
+    if (roleName == null) return;
+    final service = context.read<UserService>();
+
+    try {
+      final result = await service.updateUserRole(userId, roleName);
+
+      if (!mounted) return;
+
+      if (result) {
+        setState(() {
+          final index = _users.indexWhere((c) => c.id == userId);
+          if (index != -1) {
+            _users[index].roleName = roleName;
+          }
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Error role'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('An unexpected error occurred: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   Future<void> _loadData() async {
@@ -151,7 +193,7 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
                   context,
                   MaterialPageRoute(
                     builder: (_) =>
-                        CreateEditHouseholdPage(householdId: household.id,),
+                        CreateEditHouseholdPage(householdId: household.id),
                   ),
                 );
               },
@@ -181,21 +223,6 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ),
-                IconButton(
-                  tooltip: 'Edit household',
-                  icon: const Icon(
-                    Icons.edit,
-                  ), // TODO: when editing, change it to a save button
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            const Placeholder(), // TODO: Edit Roles Logic
-                      ),
-                    );
-                  },
-                ),
               ],
             ),
             const Divider(),
@@ -207,6 +234,7 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
   }
 
   Widget _userTile(UserRole user) {
+    final bool canEdit = _canEditRole(user.id);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
@@ -217,18 +245,26 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
               style: Theme.of(context).textTheme.bodyLarge,
             ),
           ),
-          DropdownButton<String>(
-            value: user.roleName,
-            items: availableRoles
-                .map((role) => DropdownMenuItem(value: role, child: Text(role)))
-                .toList(),
-            onChanged: (value) {
-              if (value == null) return;
-              setState(() {
-                user.roleName = value;
-              });
-            },
-          ),
+          canEdit
+              ? DropdownButton<String>(
+                  value: user.roleName,
+                  items: availableRoles
+                      .map(
+                        (role) =>
+                            DropdownMenuItem(value: role, child: Text(role)),
+                      )
+                      .toList(),
+                  onChanged: (value) => _handleRoleChanged(user.id, value),
+                )
+              : Padding(
+                  padding: const EdgeInsets.only(right: 12.0),
+                  child: Text(
+                    user.roleName,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: Colors.grey[700]),
+                  ),
+                ),
         ],
       ),
     );

@@ -30,6 +30,7 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(await buildDependencies(child: const MyApp()));
 }
@@ -44,11 +45,12 @@ class MyApp extends StatelessWidget {
       scaffoldMessengerKey: rootScaffoldMessengerKey,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Theme.of(context).primaryColor,
+          seedColor: AppColors.primary,
+          primary: AppColors.primary,
         ),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
           backgroundColor: Colors.white,
-          selectedItemColor: Colors.blue,
+          selectedItemColor: AppColors.primary,
           unselectedItemColor: Colors.grey,
         ),
       ),
