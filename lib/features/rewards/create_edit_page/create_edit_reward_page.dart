@@ -44,7 +44,7 @@ class _CreateEditRewardPageState extends State<CreateEditRewardPage> {
 
   Future<void> _handleSave(Reward updatedModel) async {
     var rewardService = context.read<RewardService>();
-    var result;
+    Reward? result;
     if (pageMode == PageMode.edit) {
       result = await rewardService.updateReward(updatedModel);
     } else {
@@ -56,7 +56,7 @@ class _CreateEditRewardPageState extends State<CreateEditRewardPage> {
         context,
       ).showSnackBar(const SnackBar(content: Text('Saved successfully!')));
         setState(() {
-          pageMode = PageMode.view;
+          Navigator.maybePop(context);
         });
     } else {
       ScaffoldMessenger.of(
