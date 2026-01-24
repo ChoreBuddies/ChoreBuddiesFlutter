@@ -11,7 +11,7 @@ void main() {
       final result = formatDate(date);
 
       // Assert
-      expect(result, '2023-10-05');
+      expect(result, '05.10.2023');
     });
 
     test('return empty string for null', () {
