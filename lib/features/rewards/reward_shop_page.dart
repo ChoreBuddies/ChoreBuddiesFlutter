@@ -112,7 +112,10 @@ class _RewardsCenterPageState extends State<RewardsCenterPage> {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => CreateEditRewardPage()),
-          ).then((_) => setState(() {}));
+          ).then((_) async {
+            _rewards = await rewardService.getHouseholdRewards();
+            setState(() { });
+        });
         },
         label: const Text('Add new Reward'),
         icon: const Icon(Icons.add),
