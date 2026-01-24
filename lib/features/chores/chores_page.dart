@@ -30,7 +30,7 @@ class _ChoresPageState extends State<ChoresPage> {
             MaterialPageRoute(builder: (context) => CreateEditChorePage()),
           ).then((_) => setState(() {}));
         },
-        label: const Text('Add new Chore'),
+        label: const Text('Add New Chore'),
         icon: const Icon(Icons.add),
       ),
 

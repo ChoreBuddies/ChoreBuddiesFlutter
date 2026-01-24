@@ -132,13 +132,12 @@ class _NoHouseholdPageState extends State<NoHouseholdPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) =>
-                            CreateEditHouseholdPage(),
+                        builder: (_) => CreateEditHouseholdPage(),
                       ),
-                    )
+                    ),
                   },
                   icon: const Icon(Icons.add_circle_outline),
-                  label: const Text('Create New Household'),
+                  label: const Text('Create Household'),
                   style: OutlinedButton.styleFrom(
                     side: BorderSide(color: theme.colorScheme.primary),
                     shape: RoundedRectangleBorder(
