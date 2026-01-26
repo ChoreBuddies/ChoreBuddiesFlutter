@@ -10,4 +10,5 @@ const _$StatusEnumMap = {
   Status.unassigned: 0,
   Status.assigned: 1,
   Status.completed: 2,
+  Status.unverifiedcompleted: 3,
 };

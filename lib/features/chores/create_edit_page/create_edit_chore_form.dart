@@ -48,7 +48,7 @@ class _CreateEditChoreFormState extends State<CreateEditChoreForm> {
 
   late PageMode mode;
   late bool isScheduled;
-  int? assignedTo;
+  int? userId;
   DateTime? dueDate;
   Frequency? frequency;
 
@@ -60,7 +60,7 @@ class _CreateEditChoreFormState extends State<CreateEditChoreForm> {
       model.name = nameController.text;
       model.description = descriptionController.text;
       model.room = roomController.text;
-      model.userId = assignedTo;
+      model.userId = userId;
       model.isScheduled = isScheduled;
       model.rewardPointsCount = int.tryParse(rewardPointsController.text) ?? 0;
       model.dueDate = dueDate;
@@ -95,7 +95,7 @@ class _CreateEditChoreFormState extends State<CreateEditChoreForm> {
       text: model.rewardPointsCount.toString(),
     );
     isScheduled = model.isScheduled;
-    assignedTo = model.userId;
+    userId = model.userId;
     dueDate = model.dueDate;
     frequency = model.frequency;
   }
@@ -189,8 +189,8 @@ class _CreateEditChoreFormState extends State<CreateEditChoreForm> {
                 labelText: 'Assigned To',
                 border: OutlineInputBorder(),
               ),
-              initialValue: widget.users.any((u) => u.id == assignedTo)
-                  ? assignedTo
+              initialValue: widget.users.any((u) => u.id == userId)
+                  ? userId
                   : null,
               items: widget.users.map((user) {
                 return DropdownMenuItem<int>(
@@ -202,7 +202,7 @@ class _CreateEditChoreFormState extends State<CreateEditChoreForm> {
                   ? null
                   : (int? newValue) {
                       setState(() {
-                        assignedTo = newValue;
+                        userId = newValue;
                       });
                     },
             ),

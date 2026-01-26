@@ -7,16 +7,16 @@ part 'chore_overview.g.dart';
 class ChoreOverview {
   int id;
   String name;
-  int? assignedTo;
+  int? userId;
   @JsonKey(defaultValue: Status.unassigned)
   Status status;
   String room;
-  DateTime dueDate;
+  DateTime? dueDate;
 
   ChoreOverview(
     this.id,
     this.name,
-    this.assignedTo,
+    this.userId,
     this.status,
     this.room,
     this.dueDate,

@@ -45,7 +45,17 @@ class _HomePageState extends State<HomePage> {
 
             final user = snapshot.data![1] as User;
 
-            chores.sort((a, b) => a.dueDate.compareTo(b.dueDate));
+            chores.sort((a, b) {
+              if (a.dueDate == null && b.dueDate == null) {
+                return 0;
+              } else if (a.dueDate == null) {
+                return 1;
+              } else if (b.dueDate == null) {
+                return -1;
+              } else {
+                return a.dueDate!.compareTo(b.dueDate!);
+              }
+            });
 
             final completedCount = chores
                 .where((chore) => chore.status == Status.completed)
@@ -103,6 +113,7 @@ class _HomePageState extends State<HomePage> {
                                 choreService.markChoreAsDone(
                                   chores[itemIndex].id,
                                 );
+                                chores.removeAt(index);
                               }
                             }),
                             onTileTap: () => {

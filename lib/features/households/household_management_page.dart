@@ -1,6 +1,7 @@
-import 'package:chorebuddies_flutter/UI/styles/button_styles.dart';
 import 'package:chorebuddies_flutter/UI/styles/colors.dart';
 import 'package:chorebuddies_flutter/features/authentication/auth_manager.dart';
+import 'package:chorebuddies_flutter/features/chores/chore_service.dart';
+import 'package:chorebuddies_flutter/features/chores/models/chore_overview.dart';
 import 'package:chorebuddies_flutter/features/households/create_edit_page/create_edit_household_page.dart';
 import 'package:chorebuddies_flutter/features/households/household_service.dart';
 import 'package:chorebuddies_flutter/features/households/invitation_code_display.dart';
@@ -25,6 +26,7 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
   final List<String> availableRoles = ['Adult', 'Child'];
   Household? _household;
   List<UserRole> _users = [];
+  List<ChoreOverview> _chores = [];
   List<RedeemedRewardUsername> _redeemedRewards = [];
   bool _isLoading = true;
   String? _errorMessage;
@@ -39,6 +41,10 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadData();
     });
+  }
+
+  String _getUserName(int? userId) {
+    return _users.firstWhere((u) => u.id == userId).userName;
   }
 
   bool _isChild() {
@@ -62,11 +68,9 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
     final service = context.read<UserService>();
     bool allSuccess = true;
 
-    // Pętla po użytkownikach i wysłanie requestów tylko dla zmienionych ról
     for (var user in _users) {
       final originalRole = _originalRoles[user.id];
 
-      // Jeśli rola się zmieniła, wywołujemy serwis
       if (originalRole != null && originalRole != user.roleName) {
         try {
           final result = await service.updateUserRole(user.id, user.roleName);
@@ -75,7 +79,6 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
           }
         } catch (e) {
           allSuccess = false;
-          debugPrint("Error updating user ${user.id}: $e");
         }
       }
     }
@@ -134,6 +137,16 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
     });
   }
 
+  Future<bool> _verifyChore(int choreId) async {
+    final service = context.read<ChoreService>();
+    try {
+      await service.verifyChore(choreId);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
   Future<void> _loadData() async {
     setState(() {
       _isLoading = true;
@@ -143,10 +156,12 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
     try {
       final householdService = context.read<HouseholdService>();
       final userService = context.read<UserService>();
+      final choresService = context.read<ChoreService>();
 
       final results = await Future.wait([
         householdService.getHousehold(null),
         userService.getUsersRolesFromHousehold(),
+        choresService.getUnverifiedChores(),
         // rewardsService.getPendingRewards(householdId),        // TODO: add getPedingRewards
         Future.value(<RedeemedRewardUsername>[]), // Placeholder for rewards
       ]);
@@ -155,7 +170,8 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
       setState(() {
         _household = results[0] as Household;
         _users = results[1] as List<UserRole>;
-        _redeemedRewards = results[2] as List<RedeemedRewardUsername>;
+        _chores = results[2] as List<ChoreOverview>;
+        _redeemedRewards = results[3] as List<RedeemedRewardUsername>;
         _isLoading = false;
       });
     } catch (e) {
@@ -210,6 +226,8 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
           _usersCard(_users),
           const SizedBox(height: 16),
           ScheduledChoreList(),
+          const SizedBox(height: 16),
+          _choresCard(_chores),
           const SizedBox(height: 16),
           _rewardsCard(_redeemedRewards),
         ],
@@ -361,6 +379,78 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
                     ).textTheme.bodyMedium?.copyWith(color: Colors.grey[700]),
                   ),
                 ),
+        ],
+      ),
+    );
+  }
+
+  // ------------------ Chores ------------------
+
+  Widget _choresCard(List<ChoreOverview> unverifiedChores) {
+    return Card(
+      elevation: 3,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Chore Verifications',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const Divider(),
+            if (unverifiedChores.isEmpty)
+              const Text('There are no unverified chores'),
+            ...unverifiedChores.map(_choreTile),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _choreTile(ChoreOverview unverifiedChore) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  unverifiedChore.name,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                Text(
+                  _getUserName(unverifiedChore.userId),
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
+            ),
+          ),
+          OutlinedButton.icon(
+            icon: const Icon(Icons.check),
+            label: const Text('Mark as verified'),
+            onPressed: () async {
+              if ((await _verifyChore(unverifiedChore.id)) && mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Chore verified successfully')),
+                );
+                setState(() {
+                  _chores.remove(unverifiedChore);
+                });
+              }
+            },
+            style: OutlinedButton.styleFrom(
+              // Definicja ramki
+              side: const BorderSide(
+                color: AppColors.primary, // <--- Twój kolor ramki
+              ),
+
+              // Opcjonalnie: jeśli chcesz, aby tekst też był czerwony
+              foregroundColor: AppColors.primary,
+            ),
+          ),
         ],
       ),
     );
