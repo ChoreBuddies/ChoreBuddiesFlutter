@@ -63,4 +63,14 @@ class ChoreService {
       throw Exception('error marking chore as done: $e');
     }
   }
+  Future<ChoreOverview> verifyChore(int choreId) async {
+    try {
+      final response = await _httpClient.post(_httpClient.uri('$endpoint/verify?choreId=$choreId'));
+      final Map<String, dynamic> jsonChore = jsonDecode(response.body);
+
+      return ChoreOverview.fromJson(jsonChore);
+    } catch (e) {
+      throw Exception('error verifying chore: $e');
+    }
+  }
 }
