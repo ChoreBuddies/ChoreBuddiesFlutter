@@ -12,4 +12,7 @@ enum Status {
 
   @JsonValue(2)
   completed,
+
+  @JsonValue(3)
+  unverifiedcompleted,
 }
