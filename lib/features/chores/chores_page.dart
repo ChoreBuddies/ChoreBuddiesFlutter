@@ -1,7 +1,7 @@
 import 'package:chorebuddies_flutter/features/chores/chore_service.dart';
 import 'package:chorebuddies_flutter/features/chores/chore_view.dart';
-import 'package:chorebuddies_flutter/features/chores/create_edit_page/create_edit_chore_form.dart';
 import 'package:chorebuddies_flutter/features/chores/create_edit_page/create_edit_chore_page.dart';
+import 'package:chorebuddies_flutter/features/chores/models/status.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:chorebuddies_flutter/features/chores/models/chore_overview.dart';
@@ -60,6 +60,7 @@ class _ChoresPageState extends State<ChoresPage> {
                   onCheckBoxChanged: (value) => setState(() {
                     if (value != null && value) {
                       choreService.markChoreAsDone(chores[index].id);
+                      chores[index].status = Status.unverifiedcompleted;
                     }
                   }),
                   onTileTap: () => Navigator.push(

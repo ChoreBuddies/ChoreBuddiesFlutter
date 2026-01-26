@@ -67,6 +67,22 @@ class ChoreView extends StatelessWidget {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
+          if (choreOverview.status == Status.unverifiedcompleted)
+            Chip(
+              label: Text(
+                'Waiting for verification',
+                style: TextStyle(
+                  color: Colors.red.shade900,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              backgroundColor: Colors.red.shade100,
+              side: BorderSide.none,
+              shape: StadiumBorder(),
+              padding: EdgeInsets.all(0),
+              visualDensity: VisualDensity.compact,
+            ),
           IconButton(
             icon: const Icon(Icons.notifications),
             onPressed: () => showReminderDialog(context),

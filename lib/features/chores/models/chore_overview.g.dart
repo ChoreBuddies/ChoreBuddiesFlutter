@@ -10,20 +10,22 @@ ChoreOverview _$ChoreOverviewFromJson(Map<String, dynamic> json) =>
     ChoreOverview(
       (json['id'] as num).toInt(),
       json['name'] as String,
-      (json['assignedTo'] as num?)?.toInt(),
+      (json['userId'] as num?)?.toInt(),
       $enumDecodeNullable(_$StatusEnumMap, json['status']) ?? Status.unassigned,
       json['room'] as String,
-      DateTime.parse(json['dueDate'] as String),
+      json['dueDate'] == null
+          ? null
+          : DateTime.parse(json['dueDate'] as String),
     );
 
 Map<String, dynamic> _$ChoreOverviewToJson(ChoreOverview instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
-      'assignedTo': instance.assignedTo,
+      'userId': instance.userId,
       'status': _$StatusEnumMap[instance.status]!,
       'room': instance.room,
-      'dueDate': instance.dueDate.toIso8601String(),
+      'dueDate': instance.dueDate?.toIso8601String(),
     };
 
 const _$StatusEnumMap = {
