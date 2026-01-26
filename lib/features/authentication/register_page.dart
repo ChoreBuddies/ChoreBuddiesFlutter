@@ -48,7 +48,7 @@ class _RegisterPageState extends State<RegisterPage> {
         _dateOfBirthController.text = formatDate(pickedDate);
       });
 
-      _formKey.currentState?.validate();
+      // _formKey.currentState?.validate();
     }
   }
 
@@ -89,23 +89,6 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 const SizedBox(height: 20),
 
-                GFormField(
-                  labelText: 'Username',
-                  controller: _userNameController,
-                  validator: (value) =>
-                      value == null || value.isEmpty ? 'Required' : null,
-                ),
-                GFormField(
-                  labelText: 'Email',
-                  controller: _emailController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Required';
-                    }
-                    return Validators.validate(value, ValidationType.email);
-                  },
-                ),
-
                 Row(
                   children: [
                     Expanded(
@@ -137,6 +120,22 @@ class _RegisterPageState extends State<RegisterPage> {
                       return 'Please select your date of birth';
                     }
                     return null;
+                  },
+                ),
+                GFormField(
+                  labelText: 'Username',
+                  controller: _userNameController,
+                  validator: (value) =>
+                      value == null || value.isEmpty ? 'Required' : null,
+                ),
+                GFormField(
+                  labelText: 'Email',
+                  controller: _emailController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Required';
+                    }
+                    return Validators.validate(value, ValidationType.email);
                   },
                 ),
 
