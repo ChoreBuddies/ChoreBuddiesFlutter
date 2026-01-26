@@ -74,29 +74,31 @@ class _SetupRewardsPageState extends State<SetupRewardsPage> {
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Rewards have been added!')),
-      );
-
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Rewards have been added!')));
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => const MainLayout()),
-            (route) => false,
+        MaterialPageRoute(
+          builder: (context) => const MainLayout(initialIndex: 4),
+        ),
+        (route) => false,
       );
-
     } catch (e) {
       setState(() => _isLoading = false);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error while saving: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error while saving: $e')));
       }
     }
   }
 
   void _onSkip() {
     Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => const MainLayout()),
-          (route) => false,
+      MaterialPageRoute(
+        builder: (context) => const MainLayout(initialIndex: 4),
+      ),
+      (route) => false,
     );
   }
 
@@ -107,125 +109,133 @@ class _SetupRewardsPageState extends State<SetupRewardsPage> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Choose your starting rewards",
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    "Select the rewards you want to add to your new household.",
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
-                  ),
-                  const SizedBox(height: 24),
-                  Card(
-                      margin: const EdgeInsets.only(bottom: 16),
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Rewards",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                            const SizedBox(height: 12),
-
-                            Wrap(
-                              spacing: 8.0,
-                              runSpacing: 8.0,
-                              children: _allRewards.map((reward) {
-                                final isSelected = _selectedIds.contains(reward.id);
-                                final color = _getColorForReward(reward.name);
-                                return RawChip(
-                                  label: Text('${reward.name} (${reward.cost})'),
-                                  selected: isSelected,
-                                  showCheckmark: true,
-                                  checkmarkColor: color,
-
-                                  backgroundColor: Colors.white,
-                                  selectedColor: color.withOpacity(0.15),
-
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    side: BorderSide(
-                                        color: color,
-                                        width: 1.5
-                                    ),
-                                  ),
-
-                                  labelStyle: TextStyle(
-                                    color: color,
-                                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                  ),
-
-                                  onSelected: (val) {
-                                    setState(() {
-                                      if (val) {
-                                        _selectedIds.add(reward.id);
-                                      } else {
-                                        _selectedIds.remove(reward.id);
-                                      }
-                                    });
-                                  },
-                                );
-                              }).toList(),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ),
-
-          Container(
-            padding: const EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, -5),
-                )
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                TextButton(
-                  onPressed: _onSkip,
-                  child: const Text("Skip"),
-                ),
-                const SizedBox(width: 16),
-                ElevatedButton(
-                  onPressed: _selectedIds.isNotEmpty ? _onSave : null,
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Choose your starting rewards",
+                          style: Theme.of(context).textTheme.headlineMedium,
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          "Select the rewards you want to add to your new household.",
+                          style: TextStyle(fontSize: 16, color: Colors.grey),
+                        ),
+                        const SizedBox(height: 24),
+                        Card(
+                          margin: const EdgeInsets.only(bottom: 16),
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Rewards",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+
+                                Wrap(
+                                  spacing: 8.0,
+                                  runSpacing: 8.0,
+                                  children: _allRewards.map((reward) {
+                                    final isSelected = _selectedIds.contains(
+                                      reward.id,
+                                    );
+                                    final color = _getColorForReward(
+                                      reward.name,
+                                    );
+                                    return RawChip(
+                                      label: Text(
+                                        '${reward.name} (${reward.cost})',
+                                      ),
+                                      selected: isSelected,
+                                      showCheckmark: true,
+                                      checkmarkColor: color,
+
+                                      backgroundColor: Colors.white,
+                                      selectedColor: color.withOpacity(0.15),
+
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        side: BorderSide(
+                                          color: color,
+                                          width: 1.5,
+                                        ),
+                                      ),
+
+                                      labelStyle: TextStyle(
+                                        color: color,
+                                        fontWeight: isSelected
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                      ),
+
+                                      onSelected: (val) {
+                                        setState(() {
+                                          if (val) {
+                                            _selectedIds.add(reward.id);
+                                          } else {
+                                            _selectedIds.remove(reward.id);
+                                          }
+                                        });
+                                      },
+                                    );
+                                  }).toList(),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  child: Text("Add selected (${_selectedIds.length})"),
+                ),
+
+                Container(
+                  padding: const EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, -5),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(onPressed: _onSkip, child: const Text("Skip")),
+                      const SizedBox(width: 16),
+                      ElevatedButton(
+                        onPressed: _selectedIds.isNotEmpty ? _onSave : null,
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 12,
+                          ),
+                        ),
+                        child: Text("Add selected (${_selectedIds.length})"),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
-          ),
-        ],
-      ),
     );
   }
 }

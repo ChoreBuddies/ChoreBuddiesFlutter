@@ -11,7 +11,9 @@ import '../pages/home_page.dart';
 Map<String, dynamic>? pendingNotificationData;
 
 class MainLayout extends StatefulWidget {
-  const MainLayout({Key? key}) : super(key: key);
+  final int initialIndex;
+
+  const MainLayout({Key? key, this.initialIndex = 0}) : super(key: key);
 
   @override
   MainLayoutState createState() => MainLayoutState();
@@ -22,6 +24,7 @@ class MainLayoutState extends State<MainLayout> {
   @override
   void initState() {
     super.initState();
+    _selectedIndex = widget.initialIndex;
     // Process pending notifications after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (pendingNotificationData != null) {

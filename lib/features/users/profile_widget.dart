@@ -141,7 +141,10 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     final authManager = context.read<AuthManager>();
 
     if (isLoading) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const Padding(
+        padding: EdgeInsets.all(24),
+        child: Center(child: CircularProgressIndicator()),
+      );
     }
 
     if (hasError) {
