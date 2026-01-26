@@ -47,8 +47,6 @@ class _RegisterPageState extends State<RegisterPage> {
         dateOfBirth = pickedDate;
         _dateOfBirthController.text = formatDate(pickedDate);
       });
-
-      // _formKey.currentState?.validate();
     }
   }
 
