@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:chorebuddies_flutter/core/http_client_extensions.dart';
+import 'package:chorebuddies_flutter/features/redeemedrewards/models/fulfill_redeemed_reward.dart';
 import 'package:chorebuddies_flutter/features/redeemedrewards/models/redeemed_reward.dart';
 import 'package:chorebuddies_flutter/features/rewards/models/reward_dto.dart';
 import 'package:http/http.dart' as http;
@@ -40,6 +41,36 @@ class RedeemedRewardService {
       return RedeemedReward.fromJson(jsonRedeemedReward);
     } catch (e) {
       throw Exception('error getting redeeming reward: $e');
+    }
+  }
+
+  Future<RedeemedReward?> fulfillReward(Reward reward) async {
+    try {
+      final response = await _httpClient.put(
+        _httpClient.uri('$endpoint/fulfill'),
+        body: jsonEncode(FulfillRedeemedReward(reward.id!)),
+      );
+      if (response.statusCode != 200) {
+        return null;
+      }
+      final Map<String, dynamic> jsonRedeemedReward = jsonDecode(response.body);
+
+      return RedeemedReward.fromJson(jsonRedeemedReward);
+    } catch (e) {
+      throw Exception('error getting redeeming reward: $e');
+    }
+  }
+
+  Future<List<RedeemedReward>> getHouseholdUnfulfilledRedeemedRewards() async {
+    try {
+      final response = await _httpClient.get(_httpClient.uri('$endpoint/household/unfulfilled'));
+      final List<dynamic> jsonList = jsonDecode(response.body);
+
+      return jsonList
+          .map((json) => RedeemedReward.fromJson(json as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      throw Exception('error getting household unfulfilled redeemed rewards: $e');
     }
   }
 }
