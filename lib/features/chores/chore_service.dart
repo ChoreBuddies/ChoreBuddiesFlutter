@@ -23,6 +23,18 @@ class ChoreService {
       throw Exception('error fetching chores: $e');
     }
   }
+    Future<List<ChoreOverview>> getHouseholdChores() async {
+    try {
+      final response = await _httpClient.get(_httpClient.uri('$endpoint/householdChores'));
+      final List<dynamic> jsonList = jsonDecode(response.body);
+
+      return jsonList
+          .map((json) => ChoreOverview.fromJson(json as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      throw Exception('error fetching chores: $e');
+    }
+  }
   Future<List<ChoreOverview>> getUnverifiedChores() async {
     try {
       final response = await _httpClient.get(_httpClient.uri('$endpoint/householdChores/unverified'));
