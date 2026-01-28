@@ -109,7 +109,7 @@ class _CreateEditChorePageState extends State<CreateEditChorePage> {
   Future<void> _handleSave(ChoreViewModel updatedModel) async {
     var scheduledChoresService = context.read<ScheduledChoresService>();
     var choresService = context.read<ChoreService>();
-    var result;
+    dynamic result;
     if (pageMode == PageMode.edit) {
       if (updatedModel.isScheduled) {
         result = await scheduledChoresService.updateChore(
@@ -134,7 +134,7 @@ class _CreateEditChorePageState extends State<CreateEditChorePage> {
       ).showSnackBar(const SnackBar(content: Text('Saved successfully!')));
 
       setState(() {
-        pageMode = PageMode.view;
+        Navigator.maybePop(context);
       });
     } else {
       ScaffoldMessenger.of(
