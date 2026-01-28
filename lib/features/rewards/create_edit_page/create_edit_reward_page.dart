@@ -12,8 +12,7 @@ class CreateEditRewardPage extends StatefulWidget {
   const CreateEditRewardPage({super.key, this.rewardId});
 
   @override
-  State<CreateEditRewardPage> createState() =>
-      _CreateEditRewardPageState();
+  State<CreateEditRewardPage> createState() => _CreateEditRewardPageState();
 }
 
 class _CreateEditRewardPageState extends State<CreateEditRewardPage> {
@@ -31,7 +30,9 @@ class _CreateEditRewardPageState extends State<CreateEditRewardPage> {
     var rewardService = context.read<RewardService>();
     if (widget.rewardId != null) {
       pageMode = PageMode.view;
-      model = await rewardService.getReward(widget.rewardId!) ?? Reward(null, '', '', 0, 0, 0);
+      model =
+          await rewardService.getReward(widget.rewardId!) ??
+          Reward(null, '', '', 0, 0, 0);
     } else {
       pageMode = PageMode.create;
       model = Reward(null, '', '', 0, 0, 0);
@@ -50,14 +51,14 @@ class _CreateEditRewardPageState extends State<CreateEditRewardPage> {
     } else {
       result = await rewardService.createReward(updatedModel);
     }
-    if(!mounted) return;
+    if (!mounted) return;
     if (result != null) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Saved successfully!')));
-        setState(() {
-          Navigator.maybePop(context);
-        });
+      setState(() {
+        Navigator.maybePop(context);
+      });
     } else {
       ScaffoldMessenger.of(
         context,

@@ -16,9 +16,7 @@ class UserService {
 
   Future<User> getMe() async {
     try {
-      final response = await _httpClient.get(
-        await _httpClient.uri('$endpoint/me'),
-      );
+      final response = await _httpClient.get(_httpClient.uri('$endpoint/me'));
       final Map<String, dynamic> meJson = jsonDecode(response.body);
 
       return User.fromJson(meJson);
