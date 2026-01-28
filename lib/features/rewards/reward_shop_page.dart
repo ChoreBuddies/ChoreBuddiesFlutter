@@ -73,7 +73,7 @@ class _RewardsCenterPageState extends State<RewardsCenterPage> {
     if (result != null) {
       setState(() {
         _userPoints -= reward.cost;
-        _loadData();
+        _history.add(result);
       });
     }
   }
