@@ -1,5 +1,4 @@
 import 'package:chorebuddies_flutter/features/chores/chores_page.dart';
-import 'package:chorebuddies_flutter/UI/pages/page_not_found.dart';
 import 'package:chorebuddies_flutter/features/chat/chat_page.dart';
 import 'package:chorebuddies_flutter/UI/pages/settings_page.dart';
 import 'package:chorebuddies_flutter/features/households/household_management_page.dart';

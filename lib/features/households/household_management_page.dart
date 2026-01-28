@@ -6,7 +6,10 @@ import 'package:chorebuddies_flutter/features/households/create_edit_page/create
 import 'package:chorebuddies_flutter/features/households/household_service.dart';
 import 'package:chorebuddies_flutter/features/households/invitation_code_display.dart';
 import 'package:chorebuddies_flutter/features/households/models/household.dart';
+import 'package:chorebuddies_flutter/features/redeemedrewards/models/redeemed_reward.dart';
 import 'package:chorebuddies_flutter/features/redeemedrewards/models/redeemedreward_username.dart';
+import 'package:chorebuddies_flutter/features/redeemedrewards/redeemed_rewards_service.dart';
+import 'package:chorebuddies_flutter/features/rewards/models/reward_dto.dart';
 import 'package:chorebuddies_flutter/features/scheduled_chores/scheduled_chore_list.dart';
 
 import 'package:chorebuddies_flutter/features/users/models/user_role.dart';
@@ -147,6 +150,16 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
     return true;
   }
 
+  Future<bool> _fulfillReward(RedeemedRewardUsername reward) async {
+    final service = context.read<RedeemedRewardService>();
+    try {
+      await service.fulfillReward(reward);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
   Future<void> _loadData() async {
     setState(() {
       _isLoading = true;
@@ -157,13 +170,13 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
       final householdService = context.read<HouseholdService>();
       final userService = context.read<UserService>();
       final choresService = context.read<ChoreService>();
+      final redeemedRewardService = context.read<RedeemedRewardService>();
 
       final results = await Future.wait([
         householdService.getHousehold(null),
         userService.getUsersRolesFromHousehold(),
         choresService.getUnverifiedChores(),
-        // rewardsService.getPendingRewards(householdId),        // TODO: add getPedingRewards
-        Future.value(<RedeemedRewardUsername>[]), // Placeholder for rewards
+        redeemedRewardService.getHouseholdUnfulfilledRedeemedRewards(),
       ]);
 
       if (!mounted) return;
@@ -443,11 +456,7 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
             },
             style: OutlinedButton.styleFrom(
               // Definicja ramki
-              side: const BorderSide(
-                color: AppColors.primary, // <--- Twój kolor ramki
-              ),
-
-              // Opcjonalnie: jeśli chcesz, aby tekst też był czerwony
+              side: const BorderSide(color: AppColors.primary),
               foregroundColor: AppColors.primary,
             ),
           ),
@@ -499,19 +508,24 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
               ],
             ),
           ),
-          ElevatedButton.icon(
+          OutlinedButton.icon(
             icon: const Icon(Icons.check),
-            label: const Text('Approve'),
-            onPressed: () {
-              // TODO: approve reward logic
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'Reward approved for ${redeemedReward.userName}',
-                  ),
-                ),
-              );
+            label: const Text('Mark as fulfilled'),
+            onPressed: () async {
+              if ((await _fulfillReward(redeemedReward)) && mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Reward fulfilled successfully')),
+                );
+                setState(() {
+                  _redeemedRewards.remove(redeemedReward);
+                });
+              }
             },
+            style: OutlinedButton.styleFrom(
+              // Definicja ramki
+              side: const BorderSide(color: AppColors.primary),
+              foregroundColor: AppColors.primary,
+            ),
           ),
         ],
       ),
