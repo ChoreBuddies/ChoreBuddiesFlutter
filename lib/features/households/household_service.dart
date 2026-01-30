@@ -4,6 +4,7 @@ import 'package:chorebuddies_flutter/core/http_client_extensions.dart';
 import 'package:chorebuddies_flutter/features/authentication/auth_manager.dart';
 import 'package:chorebuddies_flutter/features/authentication/models/access_token_dto.dart';
 import 'package:chorebuddies_flutter/features/authentication/models/authentication_result_dto.dart';
+import 'package:chorebuddies_flutter/features/households/household_constants.dart';
 import 'package:chorebuddies_flutter/features/households/models/create_household_dto.dart';
 import 'package:chorebuddies_flutter/features/households/models/household.dart';
 import 'package:chorebuddies_flutter/features/households/models/join_household_dto.dart';
@@ -13,7 +14,6 @@ import 'package:http/http.dart' as http;
 class HouseholdService extends ChangeNotifier {
   final http.Client _httpClient;
   final AuthManager _authManager;
-  final String _endpoint = '/household';
   HouseholdService({
     required http.Client httpClient,
     required AuthManager authManager,
@@ -23,7 +23,9 @@ class HouseholdService extends ChangeNotifier {
   Future<Household> getHousehold(int? id) async {
     try {
       final response = await _httpClient.get(
-        _httpClient.uri('$_endpoint/?id=$id'),
+        _httpClient.uri(
+          '${HouseholdConstants.apiEndpointGetHousehold}/?id=$id',
+        ),
       );
       final dynamic json = jsonDecode(response.body);
       return Household.fromJson(json as Map<String, dynamic>);
@@ -35,9 +37,10 @@ class HouseholdService extends ChangeNotifier {
   Future<String?> createHousehold(Household household) async {
     try {
       final response = await _httpClient.post(
-        _httpClient.uri('$_endpoint/add'),
-        body: jsonEncode(CreateHouseholdDto(household.name, household.description).toJson()
-        )
+        _httpClient.uri(HouseholdConstants.apiEndpointCreateHousehold),
+        body: jsonEncode(
+          CreateHouseholdDto(household.name, household.description).toJson(),
+        ),
       );
       final dynamic json = jsonDecode(response.body);
       final dto = AccessTokenDto.fromJson(json);
@@ -54,7 +57,7 @@ class HouseholdService extends ChangeNotifier {
     int id = household.id as int;
     try {
       final response = await _httpClient.put(
-        _httpClient.uri('$_endpoint/update/$id'),
+        _httpClient.uri('${HouseholdConstants.apiEndpointUpdateHousehold}/$id'),
         body: jsonEncode(household.toJson()),
       );
       final dynamic json = jsonDecode(response.body);
@@ -67,7 +70,7 @@ class HouseholdService extends ChangeNotifier {
   Future<String?> joinHousehold(String invitationCode) async {
     try {
       final response = await _httpClient.put(
-        _httpClient.uri('$_endpoint/join'),
+        _httpClient.uri(HouseholdConstants.apiEndpointJoinHousehold),
         body: jsonEncode(JoinHouseholdDto(invitationCode).toJson()),
       );
       final dynamic json = jsonDecode(response.body);

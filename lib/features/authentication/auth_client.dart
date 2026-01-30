@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:chorebuddies_flutter/features/authentication/auth_constants.dart';
 import 'package:chorebuddies_flutter/features/authentication/auth_manager.dart';
 import 'package:http/http.dart' as http;
 
@@ -18,7 +19,7 @@ class AuthClient extends http.BaseClient {
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
     final token = _authManager.token;
     if (token != null) {
-      request.headers['Authorization'] = 'Bearer $token';
+      request.headers['Authorization'] = '${AuthConstants.bearer} $token';
     }
 
     request.headers['Content-Type'] = 'application/json';
@@ -31,7 +32,7 @@ class AuthClient extends http.BaseClient {
       if (refreshed) {
         final newToken = _authManager.token;
         if (newToken != null) {
-          clone.headers['Authorization'] = 'Bearer $newToken';
+          clone.headers['Authorization'] = '${AuthConstants.bearer} $newToken';
           response = await _inner.send(clone);
         }
       }

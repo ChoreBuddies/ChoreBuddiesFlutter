@@ -5,18 +5,22 @@ import 'package:chorebuddies_flutter/features/redeemedrewards/models/create_rede
 import 'package:chorebuddies_flutter/features/redeemedrewards/models/fulfill_redeemed_reward.dart';
 import 'package:chorebuddies_flutter/features/redeemedrewards/models/redeemed_reward.dart';
 import 'package:chorebuddies_flutter/features/redeemedrewards/models/redeemedreward_username.dart';
+import 'package:chorebuddies_flutter/features/redeemedrewards/redeemed_rewards_constants.dart';
 import 'package:chorebuddies_flutter/features/rewards/models/reward_dto.dart';
 import 'package:http/http.dart' as http;
 
 class RedeemedRewardService {
   final http.Client _httpClient;
-  final String endpoint = '/redeemedRewards';
   RedeemedRewardService({required http.Client httpClient})
     : _httpClient = httpClient;
 
   Future<List<RedeemedReward>> getUsersRedeemedRewards() async {
     try {
-      final response = await _httpClient.get(_httpClient.uri(endpoint));
+      final response = await _httpClient.get(
+        _httpClient.uri(
+          RedeemedRewardsConstants.apiEndpointGetUsersRedeemedRewards,
+        ),
+      );
       final List<dynamic> jsonList = jsonDecode(response.body);
 
       return jsonList
@@ -30,7 +34,7 @@ class RedeemedRewardService {
   Future<RedeemedReward?> redeemReward(Reward reward) async {
     try {
       final response = await _httpClient.post(
-        _httpClient.uri('$endpoint/redeem'),
+        _httpClient.uri(RedeemedRewardsConstants.apiEndpointRedeemRewards),
         body: jsonEncode(CreateRedeemedReward(reward.id!, true)),
       );
       if (response.statusCode != 200) {
@@ -47,7 +51,7 @@ class RedeemedRewardService {
   Future<bool> fulfillReward(RedeemedRewardUsername redeemedReward) async {
     try {
       final response = await _httpClient.put(
-        _httpClient.uri('$endpoint/fulfill'),
+        _httpClient.uri(RedeemedRewardsConstants.apiEndpointFulfillReward),
         body: jsonEncode(FulfillRedeemedReward(redeemedReward.id)),
       );
       if (response.statusCode != 200) {
@@ -69,7 +73,10 @@ class RedeemedRewardService {
   getHouseholdUnfulfilledRedeemedRewards() async {
     try {
       final response = await _httpClient.get(
-        _httpClient.uri('$endpoint/household/unfulfilled'),
+        _httpClient.uri(
+          RedeemedRewardsConstants
+              .apiEndpointGetHouseholdsUnfulfilledRedeemedRewards,
+        ),
       );
       final List<dynamic> jsonList = jsonDecode(response.body);
 
