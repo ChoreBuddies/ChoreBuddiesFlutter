@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:chorebuddies_flutter/features/authentication/auth_constants.dart';
 import 'package:chorebuddies_flutter/features/authentication/models/refresh_tokens_dto.dart';
 import 'package:http/http.dart' as http;
 import 'models/authentication_result_dto.dart';
@@ -8,7 +9,6 @@ import 'models/register_request_dto.dart';
 class AuthApiService {
   final http.Client _httpClient;
   final String baseUrl;
-  final String _endpoint = '/auth';
 
   AuthApiService({required this.baseUrl, http.Client? httpClient})
     : _httpClient = httpClient ?? http.Client();
@@ -18,7 +18,7 @@ class AuthApiService {
 
     try {
       final response = await _httpClient.post(
-        Uri.parse('$baseUrl$_endpoint/login'),
+        Uri.parse('$baseUrl${AuthConstants.apiEndpointLogin}'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(request.toJson()),
       );
@@ -53,7 +53,7 @@ class AuthApiService {
 
     try {
       final response = await _httpClient.post(
-        Uri.parse('$baseUrl$_endpoint/signup'),
+        Uri.parse('$baseUrl${AuthConstants.apiEndpointSignup}'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(request.toJson()),
       );
@@ -76,7 +76,7 @@ class AuthApiService {
 
     try {
       final response = await _httpClient.post(
-        Uri.parse('$baseUrl$_endpoint/refresh'),
+        Uri.parse('$baseUrl${AuthConstants.apiEndpointRefresh}'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(request.toJson()),
       );

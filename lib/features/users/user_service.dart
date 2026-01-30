@@ -5,18 +5,20 @@ import 'package:chorebuddies_flutter/features/users/models/update_fcmtoken_dto.d
 import 'package:chorebuddies_flutter/features/users/models/update_role_dto.dart';
 import 'package:chorebuddies_flutter/features/users/models/update_user_dto.dart';
 import 'package:chorebuddies_flutter/features/users/models/user.dart';
+import 'package:chorebuddies_flutter/features/users/user_service_constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:chorebuddies_flutter/features/users/models/user_role.dart';
 import 'package:chorebuddies_flutter/features/users/models/user_minimal_dto.dart';
 
 class UserService {
   final http.Client _httpClient;
-  final String endpoint = '/users';
   UserService({required http.Client httpClient}) : _httpClient = httpClient;
 
   Future<User> getMe() async {
     try {
-      final response = await _httpClient.get(_httpClient.uri('$endpoint/me'));
+      final response = await _httpClient.get(
+        _httpClient.uri(UserServiceConstants.apiEndpointMe),
+      );
       final Map<String, dynamic> meJson = jsonDecode(response.body);
 
       return User.fromJson(meJson);
@@ -28,7 +30,7 @@ class UserService {
   Future<int> getMyPointsCount() async {
     try {
       final response = await _httpClient.get(
-        _httpClient.uri('$endpoint/myPoints'),
+        _httpClient.uri(UserServiceConstants.apiEndpointPoints),
       );
       final dynamic pointsJson = jsonDecode(response.body);
 
@@ -41,7 +43,7 @@ class UserService {
   Future<List<UserMinimalDto>> getMyHouseholdMembersAsync() async {
     try {
       final response = await _httpClient.get(
-        _httpClient.uri('$endpoint/household'),
+        _httpClient.uri(UserServiceConstants.apiEndpointMyHouseholdMembers),
       );
       final List<dynamic> usersJson = jsonDecode(response.body);
 
@@ -56,7 +58,9 @@ class UserService {
   Future<List<UserRole>> getUsersRolesFromHousehold() async {
     try {
       final response = await _httpClient.get(
-        _httpClient.uri('$endpoint/household?role=true'),
+        _httpClient.uri(
+          '${UserServiceConstants.apiEndpointMyHouseholdMembers}true',
+        ),
       );
       final List<dynamic> usersJson = jsonDecode(response.body);
 
@@ -86,7 +90,7 @@ class UserService {
     );
     try {
       final response = await _httpClient.put(
-        _httpClient.uri('$endpoint/me'),
+        _httpClient.uri(UserServiceConstants.apiEndpointMe),
         body: jsonEncode(updateUserDto.toJson()),
         headers: {'Content-Type': 'application/json'},
       );
@@ -107,7 +111,7 @@ class UserService {
     var dto = UpdatRoleDto(id: id, roleName: roleName);
     try {
       final response = await _httpClient.put(
-        _httpClient.uri('$endpoint/role'),
+        _httpClient.uri(UserServiceConstants.apiEndpointRole),
         body: jsonEncode(dto.toJson()),
         headers: {'Content-Type': 'application/json'},
       );
@@ -127,7 +131,7 @@ class UserService {
     var updateFcmtokenDto = UpdateFcmtokenDto(token);
     try {
       final response = await _httpClient.put(
-        _httpClient.uri('$endpoint/fcmtoken'),
+        _httpClient.uri(UserServiceConstants.apiEndpointFcmToken),
         body: jsonEncode(updateFcmtokenDto.toJson()),
         headers: {'Content-Type': 'application/json'},
       );

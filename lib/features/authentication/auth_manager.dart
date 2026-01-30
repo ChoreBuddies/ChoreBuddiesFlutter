@@ -1,4 +1,5 @@
 import 'package:chorebuddies_flutter/features/authentication/auth_api_service.dart';
+import 'package:chorebuddies_flutter/features/authentication/auth_constants.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -6,8 +7,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 class AuthManager extends ChangeNotifier {
   final AuthApiService _authApiService;
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
-  static final String accessTokenKey = 'auth_token';
-  static final String refreshTokenKey = 'refresh_token';
+
   String? _token;
   String? _refreshToken;
 
@@ -44,8 +44,8 @@ class AuthManager extends ChangeNotifier {
   }
 
   Future<void> init() async {
-    _token = await _storage.read(key: accessTokenKey);
-    _refreshToken = await _storage.read(key: refreshTokenKey);
+    _token = await _storage.read(key: AuthConstants.authTokenKey);
+    _refreshToken = await _storage.read(key: AuthConstants.refreshToken);
     notifyListeners();
   }
 
@@ -95,22 +95,22 @@ class AuthManager extends ChangeNotifier {
   Future<void> logout() async {
     _token = null;
     _refreshToken = null;
-    await _storage.delete(key: accessTokenKey);
-    await _storage.delete(key: refreshTokenKey);
+    await _storage.delete(key: AuthConstants.authTokenKey);
+    await _storage.delete(key: AuthConstants.refreshToken);
     notifyListeners();
   }
 
   Future<void> storeTokens(String accessToken, String refreshToken) async {
     _token = accessToken;
-    await _storage.write(key: accessTokenKey, value: _token);
+    await _storage.write(key: AuthConstants.authTokenKey, value: _token);
     _refreshToken = refreshToken;
-    await _storage.write(key: refreshTokenKey, value: _refreshToken);
+    await _storage.write(key: AuthConstants.refreshToken, value: _refreshToken);
     notifyListeners();
   }
 
   Future<void> storeAccessToken(String accessToken) async {
     _token = accessToken;
-    await _storage.write(key: accessTokenKey, value: _token);
+    await _storage.write(key: AuthConstants.authTokenKey, value: _token);
     notifyListeners();
   }
 

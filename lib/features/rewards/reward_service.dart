@@ -4,16 +4,18 @@ import 'package:chorebuddies_flutter/core/http_client_extensions.dart';
 import 'package:chorebuddies_flutter/features/predefined_rewards/models/predefined_reward_request.dart';
 import 'package:chorebuddies_flutter/features/rewards/models/reward_dto.dart';
 import 'package:chorebuddies_flutter/features/rewards/models/create_reward_dto.dart';
+import 'package:chorebuddies_flutter/features/rewards/rewards_constants.dart';
 import 'package:http/http.dart' as http;
 
 class RewardService {
   final http.Client _httpClient;
-  final String endpoint = '/rewards';
   RewardService({required http.Client httpClient}) : _httpClient = httpClient;
 
   Future<Reward?> getReward(int id) async {
     try {
-      final response = await _httpClient.get(_httpClient.uri('$endpoint/$id'));
+      final response = await _httpClient.get(
+        _httpClient.uri('${RewardsConstants.apiEndpointGetRewardById}/$id'),
+      );
       final Map<String, dynamic> jsonReward = jsonDecode(response.body);
 
       return Reward.fromJson(jsonReward);
@@ -25,7 +27,7 @@ class RewardService {
   Future<Reward?> createReward(Reward reward) async {
     try {
       final response = await _httpClient.post(
-        _httpClient.uri('$endpoint/add'),
+        _httpClient.uri(RewardsConstants.apiEndpointAddReward),
         body: jsonEncode(
           CreateRewardDto(
             reward.name,
@@ -46,7 +48,7 @@ class RewardService {
 
   Future<void> addPredefinedRewards(PredefinedRewardRequest request) async {
     final response = await _httpClient.post(
-      _httpClient.uri('$endpoint/add-predefined'),
+      _httpClient.uri(RewardsConstants.apiEndpointAddPredefinedReward),
       body: jsonEncode(request.toJson()),
     );
 
@@ -58,7 +60,7 @@ class RewardService {
   Future<Reward?> updateReward(Reward reward) async {
     try {
       final response = await _httpClient.post(
-        _httpClient.uri('$endpoint/update'),
+        _httpClient.uri(RewardsConstants.apiEndpointUpdateReward),
         body: jsonEncode(reward.toJson()),
       );
       final Map<String, dynamic> jsonReward = jsonDecode(response.body);
@@ -72,7 +74,7 @@ class RewardService {
   Future<List<Reward>> getHouseholdRewards() async {
     try {
       final response = await _httpClient.get(
-        _httpClient.uri('$endpoint/householdRewards'),
+        _httpClient.uri(RewardsConstants.apiEndpointGetHouseholdRewards),
       );
       final List<dynamic> jsonList = jsonDecode(response.body);
 

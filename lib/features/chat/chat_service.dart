@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:chorebuddies_flutter/core/app_config.dart';
 import 'package:chorebuddies_flutter/core/http_client_extensions.dart';
 import 'package:chorebuddies_flutter/features/authentication/auth_manager.dart';
+import 'package:chorebuddies_flutter/features/chat/chat_constants.dart';
 import 'package:chorebuddies_flutter/features/chat/models/chat_message_dto.dart';
 import 'package:chorebuddies_flutter/features/chat/models/chat_message_vm.dart';
 import 'package:flutter/foundation.dart';
@@ -12,7 +13,6 @@ import 'package:uuid/uuid.dart';
 class ChatService extends ChangeNotifier {
   final http.Client _httpClient;
   final AuthManager _authManager;
-  final String _apiEndpoint = '/chat';
 
   HubConnection? _hubConnection;
   List<ChatMessageVm> _messages = [];
@@ -25,18 +25,22 @@ class ChatService extends ChangeNotifier {
 
   ChatService({
     required http.Client httpClient,
-    required AuthManager authManager
-  }) : _httpClient = httpClient, _authManager = authManager;
+    required AuthManager authManager,
+  }) : _httpClient = httpClient,
+       _authManager = authManager;
 
   Future<int> loadHistory({DateTime? before}) async {
     try {
       final queryParams = <String, String>{};
 
       if (before != null) {
-        queryParams['before'] = before.toIso8601String();
+        queryParams[ChatConstants.apiChatHistoryQueryBefore] = before
+            .toIso8601String();
       }
 
-      final uri = _httpClient.uri(_apiEndpoint).replace(queryParameters: queryParams);
+      final uri = _httpClient
+          .uri(ChatConstants.apiEndpointChatHistory)
+          .replace(queryParameters: queryParams);
       final response = await _httpClient.get(uri);
 
       if (response.statusCode == 200) {
@@ -76,15 +80,14 @@ class ChatService extends ChangeNotifier {
 
     _hubConnection = HubConnectionBuilder()
         .withUrl(
-      hubUrl,
-      HttpConnectionOptions(
-        accessTokenFactory: () async => _authManager.token,
-        logging: (level, message) => debugPrint('SignalR: $message'),
-      ),
-    )
+          hubUrl,
+          HttpConnectionOptions(
+            accessTokenFactory: () async => _authManager.token,
+            logging: (level, message) => debugPrint('SignalR: $message'),
+          ),
+        )
         .withAutomaticReconnect()
         .build();
-
 
     _hubConnection!.on('ReceiveMessage', (arguments) {
       if (arguments != null && arguments.isNotEmpty) {
@@ -109,7 +112,9 @@ class ChatService extends ChangeNotifier {
     if (dto.isMine) {
       try {
         final localMsg = _messages.firstWhere(
-                (m) => m.status == MessageStatus.sending && m.clientUniqueId == dto.clientUniqueId
+          (m) =>
+              m.status == MessageStatus.sending &&
+              m.clientUniqueId == dto.clientUniqueId,
         );
 
         localMsg.status = MessageStatus.sent;
@@ -120,7 +125,6 @@ class ChatService extends ChangeNotifier {
           localMsg.status = MessageStatus.none;
           notifyListeners();
         });
-
       } catch (e) {
         _messages.add(ChatMessageVm.fromDto(dto));
       }
@@ -149,7 +153,10 @@ class ChatService extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _hubConnection!.invoke('SendMessage', args: [householdId, content, tempId]);
+      await _hubConnection!.invoke(
+        'SendMessage',
+        args: [householdId, content, tempId],
+      );
     } catch (e) {
       debugPrint('Error sending message: $e');
       _messages.remove(localMsg);

@@ -5,22 +5,24 @@ import 'package:chorebuddies_flutter/features/scheduled_chores/models/create_sch
 import 'package:chorebuddies_flutter/features/scheduled_chores/models/scheduled_chore_dto.dart';
 import 'package:chorebuddies_flutter/features/scheduled_chores/models/scheduled_chore_frequency_update_dto.dart';
 import 'package:chorebuddies_flutter/features/scheduled_chores/models/scheduled_chores_tile_view_dto.dart';
+import 'package:chorebuddies_flutter/features/scheduled_chores/scheduled_chores_constants.dart';
 import 'package:http/http.dart' as http;
 
-import '../../core/app_config.dart';
 import '../predefined_chores/models/predefined_chore_request.dart';
 
 class ScheduledChoresService {
   final http.Client _httpClient;
-
-  final String _endpoint = '/scheduledChores';
 
   ScheduledChoresService({required http.Client httpClient})
     : _httpClient = httpClient;
 
   Future<ScheduledChoreDto?> getChoreById(int id) async {
     try {
-      final response = await _httpClient.get(_httpClient.uri('$_endpoint/$id'));
+      final response = await _httpClient.get(
+        _httpClient.uri(
+          '${ScheduledChoresConstants.apiEndpointScheduledChores}/$id',
+        ),
+      );
 
       if (response.statusCode < 200 || response.statusCode >= 300) {
         return null;
@@ -38,7 +40,9 @@ class ScheduledChoresService {
   Future<List<ScheduledChoreDto>> getMyHouseholdChores() async {
     try {
       final response = await _httpClient.get(
-        _httpClient.uri('$_endpoint/Household-chores'),
+        _httpClient.uri(
+          ScheduledChoresConstants.apiEndpointGetHouseholdScheduledChores,
+        ),
       );
 
       if (response.statusCode < 200 || response.statusCode >= 300) {
@@ -58,7 +62,10 @@ class ScheduledChoresService {
   Future<List<ScheduledChoreTileViewDto>> getMyHouseholdChoresOverview() async {
     try {
       final response = await _httpClient.get(
-        _httpClient.uri('$_endpoint/household-chores/overview'),
+        _httpClient.uri(
+          ScheduledChoresConstants
+              .apiEndpointGetHouseholdScheduledChoresOverview,
+        ),
       );
 
       if (response.statusCode < 200 || response.statusCode >= 300) {
@@ -81,7 +88,9 @@ class ScheduledChoresService {
   Future<ScheduledChoreDto?> updateChore(ScheduledChoreDto chore) async {
     try {
       final response = await _httpClient.post(
-        _httpClient.uri('$_endpoint/update'),
+        _httpClient.uri(
+          ScheduledChoresConstants.apiEndpointUpdateScheduledChores,
+        ),
         body: jsonEncode(chore.toJson()),
       );
 
@@ -101,7 +110,9 @@ class ScheduledChoresService {
   Future<ScheduledChoreDto?> createChore(CreateScheduledChoreDto chore) async {
     try {
       final response = await _httpClient.post(
-        _httpClient.uri('$_endpoint/add'),
+        _httpClient.uri(
+          ScheduledChoresConstants.apiEndpointCreateScheduledChores,
+        ),
         body: jsonEncode(chore.toJson()),
       );
 
@@ -120,7 +131,7 @@ class ScheduledChoresService {
 
   Future<void> addPredefinedChores(PredefinedChoreRequest request) async {
     final response = await _httpClient.post(
-      _httpClient.uri('$_endpoint/add-predefined'),
+      _httpClient.uri(ScheduledChoresConstants.apiEndpointAddPredefined),
       body: jsonEncode(request.toJson()),
     );
 
@@ -137,7 +148,9 @@ class ScheduledChoresService {
       final dto = ScheduledChoreFrequencyUpdateDto(choreId, frequency);
 
       final response = await _httpClient.put(
-        _httpClient.uri('$_endpoint/frequency'),
+        _httpClient.uri(
+          ScheduledChoresConstants.apiEndpointUpdateChoreFrequency,
+        ),
         body: jsonEncode(dto.toJson()),
       );
 
@@ -157,7 +170,9 @@ class ScheduledChoresService {
   Future<bool> deleteChore(int choreId) async {
     try {
       final response = await _httpClient.delete(
-        _httpClient.uri('$_endpoint/$choreId'),
+        _httpClient.uri(
+          '${ScheduledChoresConstants.apiEndpointScheduledChores}/$choreId',
+        ),
       );
 
       return response.statusCode >= 200 && response.statusCode < 300;

@@ -1,21 +1,19 @@
 import 'dart:convert';
 import 'package:chorebuddies_flutter/core/http_client_extensions.dart';
+import 'package:chorebuddies_flutter/features/predefined_rewards/predefined_rewards_constants.dart';
 import 'package:http/http.dart' as http;
 
 import 'models/predefined_reward_dto.dart';
 
-class PredefinedRewardService{
+class PredefinedRewardService {
   final http.Client _httpClient;
 
-  final String _endpoint = '/predefinedRewards';
-
-  PredefinedRewardService({
-    required http.Client httpClient
-  })  : _httpClient = httpClient;
+  PredefinedRewardService({required http.Client httpClient})
+    : _httpClient = httpClient;
 
   Future<List<PredefinedRewardDto>> getAllPredefinedRewards() async {
     final response = await _httpClient.get(
-      _httpClient.uri('$_endpoint/all'),
+      _httpClient.uri(PredefinedRewardsConstants.apiEndpointGetAll),
     );
 
     if (response.statusCode == 200) {
