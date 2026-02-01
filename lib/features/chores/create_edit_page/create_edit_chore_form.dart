@@ -254,7 +254,7 @@ class _CreateEditChoreFormState extends State<CreateEditChoreForm> {
                         confirmText: 'Select',
                         context: context,
                         initialDate: dueDate ?? DateTime.now(),
-                        firstDate: DateTime.now(),
+                        firstDate: dueDate ?? DateTime.now(),
                         lastDate: DateTime.now().add(Duration(days: 365)),
                       );
                       if (picked != null) setState(() => dueDate = picked);
@@ -280,7 +280,7 @@ class _CreateEditChoreFormState extends State<CreateEditChoreForm> {
                 const SizedBox(height: 10),
                 Expanded(
                   child: OutlinedButton.icon(
-                    onPressed: () => setState(() => _switchToEdit()),
+                    onPressed: () => setState(() async => await _switchToEdit()),
                     icon: const Icon(Icons.edit),
                     label: const Text('Edit'),
                   ),

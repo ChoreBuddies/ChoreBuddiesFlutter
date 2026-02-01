@@ -4,6 +4,7 @@ import 'package:chorebuddies_flutter/features/reminders/reminders_service.dart';
 import 'package:chorebuddies_flutter/features/reminders/set_reminder_dialog.dart';
 import 'package:chorebuddies_flutter/utils/formatters.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class ChoreView extends StatelessWidget {
@@ -52,6 +53,31 @@ class ChoreView extends StatelessWidget {
     }
   }
 
+  String getChoreSubtitle() {
+    var dateFormatter = DateFormat('dd.MM.yyyy');
+    if (choreOverview.room.isNotEmpty) {
+      var room = choreOverview.room;
+      if ((choreOverview.status == Status.unassigned ||
+              choreOverview.status == Status.assigned) &&
+          choreOverview.dueDate != null) {
+        var duedate = dateFormatter.format(choreOverview.dueDate!);
+        return '$room | Due $duedate';
+      } else {
+        return room;
+      }
+    } else {
+      if ((choreOverview.status == Status.unassigned ||
+              choreOverview.status == Status.assigned) &&
+          choreOverview.dueDate != null) {
+        var duedate = dateFormatter.format(choreOverview.dueDate!);
+        return 'Due $duedate';
+      }
+      else {
+        return '';
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -61,7 +87,7 @@ class ChoreView extends StatelessWidget {
           context,
         ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
       ),
-      subtitle: Text(choreOverview.room),
+      subtitle: Text(getChoreSubtitle()),
       onTap: onTileTap,
 
       trailing: Row(
