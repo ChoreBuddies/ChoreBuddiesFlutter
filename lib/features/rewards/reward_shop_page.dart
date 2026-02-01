@@ -112,19 +112,23 @@ class _RewardsCenterPageState extends State<RewardsCenterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Rewards Center')),
-      floatingActionButton: _isChild ? null : FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CreateEditRewardPage()),
-          ).then((_) async {
-            _rewards = await rewardService.getHouseholdRewards();
-            setState(() {});
-          });
-        },
-        label: const Text('Add New Reward'),
-        icon: const Icon(Icons.add),
-      ),
+      floatingActionButton: _isChild
+          ? null
+          : FloatingActionButton.extended(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CreateEditRewardPage(),
+                  ),
+                ).then((_) async {
+                  _rewards = await rewardService.getHouseholdRewards();
+                  setState(() {});
+                });
+              },
+              label: const Text('Add New Reward'),
+              icon: const Icon(Icons.add),
+            ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -181,6 +185,12 @@ class _RewardsCenterPageState extends State<RewardsCenterPage> {
           onPressed: canRedeem ? () => _showRedeemDialog(reward) : null,
           child: Text('${reward.cost} pts'),
         ),
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CreateEditRewardPage(rewardId: reward.id),
+          ),
+        ).then((_) => setState(() {})),
       ),
     );
   }
