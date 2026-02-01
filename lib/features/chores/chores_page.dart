@@ -1,3 +1,4 @@
+import 'package:chorebuddies_flutter/features/authentication/auth_manager.dart';
 import 'package:chorebuddies_flutter/features/chores/chore_service.dart';
 import 'package:chorebuddies_flutter/features/chores/chore_view.dart';
 import 'package:chorebuddies_flutter/features/chores/create_edit_page/create_edit_chore_page.dart';
@@ -24,11 +25,12 @@ class _ChoresPageState extends State<ChoresPage> {
   Widget build(BuildContext context) {
     final choreService = context.read<ChoreService>();
     final userService = context.read<UserService>();
+    final authManager = context.read<AuthManager>();
 
     return Scaffold(
       appBar: AppBar(title: const Text("Chores")),
 
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: authManager.role == "Child" ? null : FloatingActionButton.extended(
         onPressed: () {
           Navigator.push(
             context,
