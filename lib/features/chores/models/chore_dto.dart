@@ -9,7 +9,7 @@ class ChoreDto {
   String name;
   String? description;
   int? userId;
-  DateTime dueDate;
+  DateTime? dueDate;
   Status status;
   String? room;
   int rewardPointsCount = 0;

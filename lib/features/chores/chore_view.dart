@@ -111,11 +111,11 @@ class ChoreView extends StatelessWidget {
             ),
           IconButton(
             icon: const Icon(Icons.notifications),
-            onPressed: () => showReminderDialog(context),
+            onPressed: choreOverview.status == Status.unverifiedcompleted ? null : () => showReminderDialog(context),
           ),
           Checkbox(
             value: choreOverview.status == Status.completed,
-            onChanged: onCheckBoxChanged,
+            onChanged: choreOverview.status == Status.unverifiedcompleted ? null : onCheckBoxChanged,
           ),
         ],
       ),
