@@ -276,7 +276,7 @@ class _CreateEditChoreFormState extends State<CreateEditChoreForm> {
 
           const SizedBox(height: 24),
 
-          if (mode == PageMode.view && !widget.isChild && widget.model.status != Status.completed)
+          if (mode == PageMode.view && !widget.isChild && widget.model.status != Status.completed && widget.model.status != Status.unverifiedcompleted)
             Row(
               children: [
                 const SizedBox(height: 10),

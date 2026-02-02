@@ -14,7 +14,7 @@ ChoreDto _$ChoreDtoFromJson(Map<String, dynamic> json) => ChoreDto(
   $enumDecode(_$StatusEnumMap, json['status']),
   json['room'] as String?,
   (json['rewardPointsCount'] as num).toInt(),
-  DateTime.parse(json['dueDate'] as String),
+  json['dueDate'] == null ? null : DateTime.parse(json['dueDate'] as String),
 );
 
 Map<String, dynamic> _$ChoreDtoToJson(ChoreDto instance) => <String, dynamic>{
@@ -22,7 +22,7 @@ Map<String, dynamic> _$ChoreDtoToJson(ChoreDto instance) => <String, dynamic>{
   'name': instance.name,
   'description': instance.description,
   'userId': instance.userId,
-  'dueDate': instance.dueDate.toIso8601String(),
+  'dueDate': instance.dueDate?.toIso8601String(),
   'status': _$StatusEnumMap[instance.status]!,
   'room': instance.room,
   'rewardPointsCount': instance.rewardPointsCount,
