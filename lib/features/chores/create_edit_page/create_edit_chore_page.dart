@@ -1,4 +1,6 @@
 import 'package:chorebuddies_flutter/UI/styles/colors.dart';
+import 'package:chorebuddies_flutter/features/authentication/auth_api_service.dart';
+import 'package:chorebuddies_flutter/features/authentication/auth_manager.dart';
 import 'package:chorebuddies_flutter/features/chores/chore_service.dart';
 import 'package:chorebuddies_flutter/features/chores/create_edit_page/create_edit_chore_form.dart';
 import 'package:chorebuddies_flutter/features/chores/mappers/chore_view_model_mapper.dart';
@@ -30,6 +32,7 @@ class _CreateEditChorePageState extends State<CreateEditChorePage> {
   late PageMode pageMode;
   List<UserMinimalDto> availableUsers = [];
   bool isLoading = true;
+  bool isChild = true;
 
   @override
   void initState() {
@@ -41,7 +44,10 @@ class _CreateEditChorePageState extends State<CreateEditChorePage> {
     var userService = context.read<UserService>();
     var scheduledChoresService = context.read<ScheduledChoresService>();
     var choresService = context.read<ChoreService>();
+    var authManager = context.read<AuthManager>();
     availableUsers = await userService.getMyHouseholdMembersAsync();
+
+    isChild = authManager.role == "Child";
 
     if (widget.choreId != null) {
       pageMode = PageMode.view;
@@ -158,6 +164,7 @@ class _CreateEditChorePageState extends State<CreateEditChorePage> {
         onValidSubmit: _handleSave,
         onPageModeChanged: (newMode) => setState(() => pageMode = newMode),
         onMarkAsDone: _handleMarkAsDonePress,
+        isChild: isChild,
       ),
     );
   }

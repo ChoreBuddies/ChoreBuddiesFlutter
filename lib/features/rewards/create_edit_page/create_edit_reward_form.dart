@@ -12,6 +12,7 @@ class CreateEditRewardForm extends StatefulWidget {
   final PageMode pageMode;
   final ValueChanged<Reward>? onValidSubmit;
   final ValueChanged<PageMode>? onPageModeChanged;
+  final bool isChild;
   final bool showCancel;
 
   const CreateEditRewardForm({
@@ -20,6 +21,7 @@ class CreateEditRewardForm extends StatefulWidget {
     required this.pageMode,
     this.onValidSubmit,
     this.onPageModeChanged,
+    this.isChild = true,
     this.showCancel = true,
   });
 
@@ -173,7 +175,7 @@ class _CreateEditRewardFormState extends State<CreateEditRewardForm> {
 
           const SizedBox(height: 24),
 
-          if (mode == PageMode.view)
+          if (mode == PageMode.view && !widget.isChild)
             Row(
               children: [
                 const SizedBox(height: 10),
@@ -187,7 +189,7 @@ class _CreateEditRewardFormState extends State<CreateEditRewardForm> {
                 const SizedBox(width: 12),
               ],
             ),
-          if (mode != PageMode.view)
+          if (mode != PageMode.view && !widget.isChild)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

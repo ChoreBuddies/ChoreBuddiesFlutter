@@ -1,3 +1,4 @@
+import 'package:chorebuddies_flutter/features/authentication/auth_manager.dart';
 import 'package:chorebuddies_flutter/features/rewards/create_edit_page/create_edit_reward_form.dart';
 import 'package:chorebuddies_flutter/features/rewards/models/reward_dto.dart';
 import 'package:chorebuddies_flutter/features/rewards/reward_service.dart';
@@ -19,6 +20,7 @@ class _CreateEditRewardPageState extends State<CreateEditRewardPage> {
   late Reward model;
   late PageMode pageMode;
   bool isLoading = true;
+  bool isChild = true;
 
   @override
   void initState() {
@@ -28,6 +30,8 @@ class _CreateEditRewardPageState extends State<CreateEditRewardPage> {
 
   Future<void> _loadData() async {
     var rewardService = context.read<RewardService>();
+    var authManager = context.read<AuthManager>();
+    isChild = authManager.role == "Child";
     if (widget.rewardId != null) {
       pageMode = PageMode.view;
       model =
@@ -79,6 +83,7 @@ class _CreateEditRewardPageState extends State<CreateEditRewardPage> {
         pageMode: pageMode,
         onValidSubmit: _handleSave,
         onPageModeChanged: (newMode) => setState(() => pageMode = newMode),
+        isChild: isChild,
       ),
     );
   }

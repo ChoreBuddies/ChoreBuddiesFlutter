@@ -1,3 +1,4 @@
+import 'package:chorebuddies_flutter/features/authentication/auth_manager.dart';
 import 'package:chorebuddies_flutter/features/redeemedrewards/models/redeemed_reward.dart';
 import 'package:chorebuddies_flutter/features/redeemedrewards/redeemed_rewards_service.dart';
 import 'package:chorebuddies_flutter/features/rewards/create_edit_page/create_edit_reward_page.dart';
@@ -24,6 +25,8 @@ class _RewardsCenterPageState extends State<RewardsCenterPage> {
   bool _isLoading = true;
   String? _errorMessage;
 
+  bool _isChild = true;
+
   late RewardService rewardService;
   late RedeemedRewardService redeemedRewardService;
   late UserService userService;
@@ -46,6 +49,7 @@ class _RewardsCenterPageState extends State<RewardsCenterPage> {
       rewardService = context.read<RewardService>();
       redeemedRewardService = context.read<RedeemedRewardService>();
       userService = context.read<UserService>();
+      final authManager = context.read<AuthManager>();
       final results = await Future.wait([
         rewardService.getHouseholdRewards(),
         redeemedRewardService.getUsersRedeemedRewards(),
@@ -56,6 +60,7 @@ class _RewardsCenterPageState extends State<RewardsCenterPage> {
         _rewards = results[0] as List<Reward>;
         _history = results[1] as List<RedeemedReward>;
         _userPoints = results[2] as int;
+        _isChild = authManager.role == "Child";
         _isLoading = false;
       });
     } catch (e) {
@@ -107,19 +112,23 @@ class _RewardsCenterPageState extends State<RewardsCenterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Rewards Center')),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CreateEditRewardPage()),
-          ).then((_) async {
-            _rewards = await rewardService.getHouseholdRewards();
-            setState(() {});
-          });
-        },
-        label: const Text('Add New Reward'),
-        icon: const Icon(Icons.add),
-      ),
+      floatingActionButton: _isChild
+          ? null
+          : FloatingActionButton.extended(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CreateEditRewardPage(),
+                  ),
+                ).then((_) async {
+                  _rewards = await rewardService.getHouseholdRewards();
+                  setState(() {});
+                });
+              },
+              label: const Text('Add New Reward'),
+              icon: const Icon(Icons.add),
+            ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -176,6 +185,12 @@ class _RewardsCenterPageState extends State<RewardsCenterPage> {
           onPressed: canRedeem ? () => _showRedeemDialog(reward) : null,
           child: Text('${reward.cost} pts'),
         ),
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CreateEditRewardPage(rewardId: reward.id),
+          ),
+        ).then((_) => setState(() {})),
       ),
     );
   }

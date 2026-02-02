@@ -19,6 +19,7 @@ class CreateEditChoreForm extends StatefulWidget {
   final ValueChanged<ChoreViewModel>? onValidSubmit;
   final ValueChanged<PageMode>? onPageModeChanged;
   final VoidCallback? onMarkAsDone;
+  final bool isChild;
   final bool showCancel;
 
   const CreateEditChoreForm({
@@ -29,6 +30,7 @@ class CreateEditChoreForm extends StatefulWidget {
     this.onValidSubmit,
     this.onPageModeChanged,
     this.showCancel = true,
+    this.isChild = true,
     this.onMarkAsDone,
   });
 
@@ -274,7 +276,7 @@ class _CreateEditChoreFormState extends State<CreateEditChoreForm> {
 
           const SizedBox(height: 24),
 
-          if (mode == PageMode.view && widget.model.status != Status.completed)
+          if (mode == PageMode.view && !widget.isChild && widget.model.status != Status.completed)
             Row(
               children: [
                 const SizedBox(height: 10),
@@ -300,7 +302,7 @@ class _CreateEditChoreFormState extends State<CreateEditChoreForm> {
                   ),
               ],
             ),
-          if (mode != PageMode.view)
+          if (mode != PageMode.view && !widget.isChild)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
