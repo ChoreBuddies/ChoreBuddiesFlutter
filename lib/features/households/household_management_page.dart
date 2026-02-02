@@ -238,7 +238,7 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
           const SizedBox(height: 16),
           _usersCard(_users),
           const SizedBox(height: 16),
-          ScheduledChoreList(),
+          ScheduledChoreList(canEdit: !_isChild()),
           const SizedBox(height: 16),
           _choresCard(_chores),
           const SizedBox(height: 16),
@@ -251,6 +251,7 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
   // ------------------ Household Details ------------------
 
   Widget _householdDetailsCard(Household household) {
+    bool canEdit = !_isChild();
     return Card(
       elevation: 3,
       child: Padding(
@@ -274,19 +275,20 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
                 ],
               ),
             ),
-            IconButton(
-              tooltip: 'Edit household',
-              icon: const Icon(Icons.edit),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) =>
-                        CreateEditHouseholdPage(householdId: household.id),
-                  ),
-                );
-              },
-            ),
+            if (canEdit)
+              IconButton(
+                tooltip: 'Edit household',
+                icon: const Icon(Icons.edit),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          CreateEditHouseholdPage(householdId: household.id),
+                    ),
+                  );
+                },
+              ),
           ],
         ),
       ),
@@ -422,6 +424,8 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
   }
 
   Widget _choreTile(ChoreOverview unverifiedChore) {
+    bool canEdit = !_isChild();
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
@@ -444,16 +448,18 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
           OutlinedButton.icon(
             icon: const Icon(Icons.check),
             label: const Text('Mark as verified'),
-            onPressed: () async {
-              if ((await _verifyChore(unverifiedChore.id)) && mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Chore verified successfully')),
-                );
-                setState(() {
-                  _chores.remove(unverifiedChore);
-                });
-              }
-            },
+            onPressed: canEdit
+                ? () async {
+                    if ((await _verifyChore(unverifiedChore.id)) && mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Chore verified successfully')),
+                      );
+                      setState(() {
+                        _chores.remove(unverifiedChore);
+                      });
+                    }
+                  }
+                : null,
             style: OutlinedButton.styleFrom(
               // Definicja ramki
               side: const BorderSide(color: AppColors.primary),
@@ -489,6 +495,7 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
   }
 
   Widget _rewardTile(RedeemedRewardUsername redeemedReward) {
+    bool canEdit = !_isChild();
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
@@ -511,16 +518,20 @@ class _HouseholdManagementPageState extends State<HouseholdManagementPage> {
           OutlinedButton.icon(
             icon: const Icon(Icons.check),
             label: const Text('Mark as fulfilled'),
-            onPressed: () async {
-              if ((await _fulfillReward(redeemedReward)) && mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Reward fulfilled successfully')),
-                );
-                setState(() {
-                  _redeemedRewards.remove(redeemedReward);
-                });
-              }
-            },
+            onPressed: canEdit
+                ? () async {
+                    if ((await _fulfillReward(redeemedReward)) && mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Reward fulfilled successfully'),
+                        ),
+                      );
+                      setState(() {
+                        _redeemedRewards.remove(redeemedReward);
+                      });
+                    }
+                  }
+                : null,
             style: OutlinedButton.styleFrom(
               // Definicja ramki
               side: const BorderSide(color: AppColors.primary),

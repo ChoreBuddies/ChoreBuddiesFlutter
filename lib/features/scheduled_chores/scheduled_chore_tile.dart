@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 class ScheduledChoreTile extends StatelessWidget {
   final ScheduledChoreTileViewDto chore;
-  final Function(Frequency) onFrequencyChanged;
+  final Function(Frequency)? onFrequencyChanged;
   final VoidCallback onPressed;
 
   const ScheduledChoreTile({
@@ -34,11 +34,11 @@ class ScheduledChoreTile extends StatelessWidget {
               items: Frequency.values
                   .map((f) => DropdownMenuItem(value: f, child: Text(f.name)))
                   .toList(),
-              onChanged: (value) {
-                if (value != null) {
-                  onFrequencyChanged(value);
-                }
-              },
+              onChanged: onFrequencyChanged != null
+                  ? (value) {
+                      if (value != null) onFrequencyChanged!(value);
+                    }
+                  : null,
             ),
           ],
         ),

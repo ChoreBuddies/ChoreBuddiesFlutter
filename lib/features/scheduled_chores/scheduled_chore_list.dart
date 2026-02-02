@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ScheduledChoreList extends StatefulWidget {
-  const ScheduledChoreList({super.key});
-
+  final bool canEdit;
+  const ScheduledChoreList({super.key, required this.canEdit});
   @override
   State<ScheduledChoreList> createState() => _ScheduledChoreListState();
 }
@@ -135,8 +135,10 @@ class _ScheduledChoreListState extends State<ScheduledChoreList> {
                     final chore = _chores[index];
                     return ScheduledChoreTile(
                       chore: chore,
-                      onFrequencyChanged: (Frequency newFrequency) =>
-                          _handleFrequencyChanged(chore.id, newFrequency),
+                      onFrequencyChanged: widget.canEdit
+                          ? (Frequency newFrequency) =>
+                                _handleFrequencyChanged(chore.id, newFrequency)
+                          : null,
                       onPressed: () async => await _handleRowPressed(chore.id),
                     );
                   },
